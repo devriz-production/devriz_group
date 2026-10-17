@@ -1,0 +1,79 @@
+---
+// One labelled form control. Label above, optional hint, error text below.
+interface Props {
+  name: string;
+  label: string;
+  type?: 'text' | 'email' | 'tel' | 'url' | 'password' | 'date' | 'file' | 'textarea' | 'select';
+  required?: boolean;
+  autocomplete?: string;
+  inputmode?: 'text' | 'tel' | 'email' | 'url' | 'numeric';
+  placeholder?: string;
+  hint?: string;
+  options?: readonly string[];
+  emptyOption?: string;
+  rows?: number;
+  maxlength?: number;
+  showFor?: string;
+  class?: string;
+  idPrefix?: string;
+  accept?: string;
+  list?: string;
+}
+
+const {
+  name,
+  label,
+  type = 'text',
+  required = false,
+  autocomplete,
+  inputmode,
+  placeholder,
+  hint,
+  options = [],
+  emptyOption = 'Select',
+  rows = 5,
+  maxlength,
+  showFor,
+  class: cls,
+  idPrefix = 'f',
+  accept,
+  list,
+} = Astro.props;
+
+const id = `${idPrefix}-${name}`;
+const describedBy = [hint ? `${id}-hint` : null, `${id}-error`].filter(Boolean).join(' ');
+const common = { id, name, required, 'aria-describedby': describedBy, class: 'input' };
+---
+
+<div class:list={['field', cls]} data-field data-show-for={showFor} data-required={required ? '' : undefined}>
+  <label for={id}>
+    {label}
+    <span class="req" aria-hidden="true" data-req hidden={!required}> *</span>
+    <span class="font-normal text-ink-3" data-opt hidden={required}> (optional)</span>
+  </label>
+  {
+    type === 'textarea' ? (
+      <textarea {...common} rows={rows} maxlength={maxlength ?? 4000} placeholder={placeholder} />
+    ) : type === 'select' ? (
+      <select {...common} autocomplete={autocomplete}>
+        <option value="">{emptyOption}</option>
+        {options.map((o) => (
+          <option value={o}>{o}</option>
+        ))}
+      </select>
+    ) : (
+      <input
+        {...common}
+        type={type}
+        autocomplete={autocomplete}
+        inputmode={inputmode}
+        placeholder={placeholder}
+        maxlength={type === 'file' || type === 'date' ? undefined : (maxlength ?? 200)}
+        accept={accept}
+        list={list}
+      />
+    )
+  }
+  {hint && <p class="hint" id={`${id}-hint`}>{hint}</p>}
+  <p class="error" id={`${id}-error`} aria-live="polite" hidden></p>
+</div>

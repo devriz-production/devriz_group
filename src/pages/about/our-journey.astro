@@ -1,0 +1,171 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { inDevelopment } from '../../data/sectors';
+
+const crumbs = [{ label: 'About', href: '/about/' }, { label: 'Our journey' }];
+
+const founding = [
+  { title: 'Process before scale', text: 'Structured execution at every level.' },
+  { title: 'Quality before volume', text: 'Standards that build long-term trust.' },
+  { title: 'System before dependency', text: 'Sustainable, repeatable operations.' },
+];
+
+// The group has published one firm date: healthcare began in 2018. The later
+// phases are described in order, without years, until the group confirms them.
+const phases = [
+  {
+    year: '2018',
+    phase: 'Foundation',
+    title: 'A healthcare-first start',
+    text: 'The group began in healthcare, skincare and aesthetic services. It laid the base with clear processes, quality controls and a long-term approach, built for scale from day one.',
+    points: ['Core team and initial operations set up', 'Service launch and a customer support workflow', 'Early compliance and reporting discipline'],
+  },
+  {
+    phase: 'Expansion',
+    title: 'Growth with systems',
+    text: 'The group expanded only after operational readiness, adding teams, processes and structured departments. New verticals followed in advanced aesthetic services, professional training and technology.',
+    points: ['HR, accounts, sales, inventory and marketing structure', 'Improved dispatch, courier support and reporting procedures', 'Stronger customer experience and escalation handling'],
+  },
+  {
+    phase: 'National reach',
+    title: 'Serving across India',
+    text: 'Operations were strengthened to serve customers across India, with centralised management and workflows that scale.',
+    points: ['Nationwide delivery and operational coordination', 'Data-driven tracking of sales, dispatch, returns and service', 'Performance reviews, role targets and training discipline'],
+  },
+  {
+    year: 'Today',
+    phase: 'Ecosystem',
+    title: 'An integrated group',
+    text: 'The group now runs multiple aligned verticals, chosen because they strengthen each other, with shared governance and strategic oversight.',
+    points: ['Healthcare, clinics, training, technology and infrastructure aligned', 'Standard procedures across teams and departments', 'Brand-led growth supported by structured execution'],
+  },
+];
+
+const enablers = [
+  'Standard procedures for dispatch, quality checks, returns handling and issue resolution.',
+  'Tracking-driven updates shared proactively with customers.',
+  'A weekly review structure to identify bottlenecks and improve delivery outcomes.',
+  'Centralised teams with defined responsibilities for accountability.',
+];
+---
+
+<Base
+  title="Our journey"
+  description="How Devriz Group grew from a healthcare-first foundation in 2018 into a multi-sector group, expanding only when operations were ready."
+  crumbs={crumbs}
+>
+  <PageHead
+    title="A vision with structure."
+    lede="Devriz Group was built with a clear objective: system-driven, scalable businesses focused on discipline, operational clarity and long-term growth."
+    crumbs={crumbs}
+    image={{ id: 'about-journey', alt: 'A new highway running toward the horizon at first light' }}
+  />
+
+  <!-- Founding principles -->
+  <section class="section">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-5" data-reveal>
+        <h2 class="display-md">From a focused beginning to a diversified group.</h2>
+        <p class="mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed">Expansion happened only after operational readiness and strategic alignment were achieved. Three principles have held from the start.</p>
+      </div>
+      <ul class="self-start border-b border-line lg:col-span-6 lg:col-start-7">
+        {
+          founding.map((f, i) => (
+            <li class="flex items-baseline justify-between gap-6 border-t border-line py-5" data-reveal style={`--i:${i}`}>
+              <span class="display-sm font-display font-semibold text-ink">{f.title}</span>
+              <span class="max-w-[24ch] text-right text-[0.9375rem] text-ink-3">{f.text}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap">
+      <h2 class="display-lg" data-reveal>Key milestones</h2>
+      <ol class="mt-12 lg:mt-16">
+        {
+          phases.map((p, i) => (
+            <li class="timeline-row grid gap-x-16 gap-y-4 border-t border-line-2 py-10 lg:grid-cols-12 lg:py-14" data-reveal style={`--i:${i}`}>
+              <div class="lg:col-span-3">
+                <p class="figure text-4xl lg:text-5xl">{p.phase}</p>
+                {p.year && <p class="meta mt-3">{p.year}</p>}
+              </div>
+              <div class="lg:col-span-5">
+                <h3 class="display-sm">{p.title}</h3>
+                <p class="mt-3 max-w-[52ch] text-ink-2">{p.text}</p>
+              </div>
+              <ul class="grid content-start gap-2.5 text-[0.9375rem] lg:col-span-4">
+                {p.points.map((point) => (
+                  <li class="flex items-start gap-3 text-ink-2">
+                    <Icon name="check" size={18} class="mt-0.5 shrink-0 text-accent-ink" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- What enables scale -->
+  <section class="section">
+    <div class="wrap grid gap-x-16 gap-y-12 lg:grid-cols-12">
+      <div class="lg:col-span-6" data-reveal>
+        <h2 class="display-md">What makes national scale possible</h2>
+        <ul class="mt-8 grid gap-4">
+          {
+            enablers.map((e) => (
+              <li class="flex items-start gap-3 text-[1.0625rem] text-ink-2">
+                <Icon name="check" size={20} class="mt-1 shrink-0 text-accent-ink" />
+                {e}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <dl class="grid grid-cols-2 gap-5 self-start lg:col-span-5 lg:col-start-8" data-reveal style="--i:1">
+        <div class="border border-line bg-surface p-6">
+          <dd class="figure text-4xl">24-48 hrs</dd>
+          <dt class="mt-3 text-[0.9375rem] text-ink-2">Target for processing a dispatch</dt>
+        </div>
+        <div class="border border-line bg-surface p-6">
+          <dd class="figure text-4xl">Weekly</dd>
+          <dt class="mt-3 text-[0.9375rem] text-ink-2">Review of delivered and returned orders</dt>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Next -->
+  <section class="section border-t border-line">
+    <div class="wrap grid gap-x-16 gap-y-8 lg:grid-cols-12">
+      <div class="lg:col-span-5" data-reveal>
+        <h2 class="display-md">What comes next</h2>
+        <p class="mt-5 max-w-[48ch] text-ink-2">
+          Growth will remain measured and purpose-driven. The group is preparing new verticals and will enter each one only when the operating
+          system behind it is ready.
+        </p>
+      </div>
+      <ul class="self-start border-b border-line lg:col-span-6 lg:col-start-7">
+        {
+          inDevelopment.map((v) => (
+            <li class="flex items-center justify-between gap-6 border-t border-line py-5">
+              <span class="display-sm font-display font-semibold text-ink">{v}</span>
+              <span class="meta">In development</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand heading="See where the group is today." text="Seven sectors and the companies in each." label="Explore our businesses" href="/businesses/" />
+</Base>

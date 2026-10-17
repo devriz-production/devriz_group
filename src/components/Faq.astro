@@ -1,0 +1,26 @@
+---
+// Native disclosure widgets: keyboard and screen-reader friendly without script.
+import Icon from './Icon.astro';
+
+interface Props {
+  items: readonly { q: string; a: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="border-b border-line">
+  {
+    items.map((item) => (
+      <details class="group border-t border-line">
+        <summary class="flex items-center justify-between gap-6 py-6 font-display text-lg font-semibold tracking-tight text-ink transition-colors hover:text-accent-ink lg:text-xl">
+          {item.q}
+          <span class="grid size-9 shrink-0 place-items-center border border-line-2 text-ink transition-transform duration-300 group-open:rotate-45">
+            <Icon name="plus" size={16} />
+          </span>
+        </summary>
+        <p class="max-w-[68ch] pb-7 pr-12 text-ink-2">{item.a}</p>
+      </details>
+    ))
+  }
+</div>

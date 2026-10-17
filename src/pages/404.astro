@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+
+const links = [
+  { href: '/businesses/', label: 'Businesses' },
+  { href: '/companies/', label: 'Companies' },
+  { href: '/careers/', label: 'Careers' },
+  { href: '/newsroom/', label: 'Newsroom' },
+  { href: '/contact/', label: 'Contact' },
+  { href: '/sitemap/', label: 'Sitemap' },
+];
+---
+
+<Base title="Page not found" description="The page you were looking for is not on the Devriz Group website." noindex>
+  <section class="section">
+    <div class="wrap max-w-4xl py-10 lg:py-20">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="display-xl mt-5">This page is not here.</h1>
+      <p class="lede mt-7">The address may have changed when the website was rebuilt, or the link you followed may be out of date.</p>
+
+      <form role="search" action="/search/" method="get" class="mt-10 flex max-w-xl gap-3">
+        <div class="field flex-1">
+          <label for="nf-q" class="sr-only">Search this website</label>
+          <input id="nf-q" name="q" type="search" class="input" placeholder="Search this website" />
+        </div>
+        <button type="submit" class="btn btn-ink">
+          <Icon name="magnifying-glass" size={18} />
+          Search
+        </button>
+      </form>
+
+      <ul class="mt-12 flex flex-wrap gap-2">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} class="chip">
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a href="/" class="link-arrow mt-12">
+        Back to the homepage
+        <Icon name="arrow-right" size={18} />
+      </a>
+    </div>
+  </section>
+</Base>

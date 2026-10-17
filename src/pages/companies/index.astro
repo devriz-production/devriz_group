@@ -1,0 +1,97 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import CompanyCard from '../../components/CompanyCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { sectors } from '../../data/sectors';
+import { companies, trusts } from '../../data/companies';
+
+const crumbs = [{ label: 'Companies' }];
+---
+
+<Base
+  title="Group companies"
+  description="The companies of Devriz Group, by sector: healthcare, technology, infrastructure, consumer products, agriculture, logistics and education."
+  crumbs={crumbs}
+>
+  <PageHead
+    title="Group companies"
+    lede="Independent companies with their own leadership and markets, each held to one group standard for governance, reporting and quality."
+    crumbs={crumbs}
+  />
+
+  <section class="section" data-filter="sector" data-noun="company" data-noun-plural="companies">
+    <div class="wrap">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div class="field w-full max-w-md">
+          <label for="company-search">Search companies</label>
+          <div class="relative">
+            <Icon name="magnifying-glass" size={18} class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-3" />
+            <input id="company-search" type="search" class="input pl-11" placeholder="Name or activity" autocomplete="off" data-filter-search />
+          </div>
+        </div>
+        <p class="meta" aria-live="polite" data-filter-count>{`${companies.length} companies`}</p>
+      </div>
+
+      <div class="no-scrollbar -mx-5 mt-8 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:px-0" role="group" aria-label="Filter by sector">
+        <button type="button" class="chip" data-filter-value="" aria-pressed="true">All sectors</button>
+        {
+          sectors.map((s) => (
+            <button type="button" class="chip" data-filter-value={s.slug} aria-pressed="false">
+              {s.short}
+            </button>
+          ))
+        }
+      </div>
+
+      <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          companies.map((c) => (
+            <li data-filter-item data-tags={c.sector} data-text={`${c.name} ${c.legalName} ${c.summary} ${c.focus.join(' ')}`}>
+              <CompanyCard company={c} />
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-10 border border-line bg-surface p-10 text-center" data-filter-empty hidden>
+        <p class="display-sm font-display font-semibold text-ink">No companies match that search.</p>
+        <p class="mt-2 text-ink-2">Try a different name, or clear the filters to see the whole group.</p>
+        <button type="button" class="btn btn-outline mt-6" data-filter-reset>Clear filters</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-5" data-reveal>
+        <h2 class="display-md">Associated trusts</h2>
+        <p class="mt-5 max-w-[48ch] text-ink-2">
+          Alongside its companies, the group supports three charitable institutions. They are not commercial businesses and are run for community
+          and animal welfare.
+        </p>
+        <a href="/impact/" class="link-arrow mt-6">
+          See our impact
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+      <ul class="self-start border-b border-line-2 lg:col-span-6 lg:col-start-7">
+        {
+          trusts.map((t, i) => (
+            <li class="border-t border-line-2 py-5" data-reveal style={`--i:${i}`}>
+              <h3 class="display-sm">{t.name}</h3>
+              <p class="mt-1 text-[0.9375rem] text-ink-2">{t.summary}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<script>
+  import '../../scripts/filter.ts';
+</script>

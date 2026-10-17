@@ -1,0 +1,187 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+
+const crumbs = [{ label: 'Search' }];
+const suggestions = ['Healthcare', 'Kotil', 'Construction', 'Careers', 'Vendor', 'Governance'];
+---
+
+<Base title="Search" description="Search the Devriz Group website for businesses, companies, people, news and policies." crumbs={crumbs} noindex>
+  <PageHead title="Search" crumbs={crumbs} narrow />
+
+  <section class="section">
+    <div class="wrap max-w-4xl">
+      <form role="search" action="/search/" method="get" data-search-form>
+        <div class="field">
+          <label for="q">Search this website</label>
+          <div class="relative">
+            <Icon name="magnifying-glass" size={22} class="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-ink-3" />
+            <input
+              id="q"
+              name="q"
+              type="search"
+              class="input min-h-16 pl-14 text-lg"
+              placeholder="A company, a sector, a person, a policy"
+              autocomplete="off"
+              aria-describedby="search-status"
+              data-search-input
+            />
+          </div>
+        </div>
+      </form>
+
+      <div class="mt-6 flex flex-wrap items-center gap-2" data-search-suggestions>
+        <span class="meta mr-2">Try</span>
+        {
+          suggestions.map((s) => (
+            <button type="button" class="chip" data-search-suggest={s}>
+              {s}
+            </button>
+          ))
+        }
+      </div>
+
+      <p class="meta mt-10" id="search-status" role="status" aria-live="polite" data-search-status></p>
+
+      <ol class="mt-4 border-b border-line" data-search-results hidden></ol>
+
+      <div class="mt-8 border border-line bg-surface p-8" data-search-empty hidden>
+        <p class="display-sm font-display font-semibold text-ink">Nothing matched that search.</p>
+        <p class="mt-2 text-ink-2">
+          Check the spelling or try a shorter word. You can also browse the
+          <a href="/sitemap/" class="link-underline text-ink">sitemap</a>
+          or
+          <a href="/contact/" class="link-underline text-ink">ask the corporate office</a>.
+        </p>
+      </div>
+
+      <noscript>
+        <p class="mt-8 text-ink-2">Search needs JavaScript. Every page is listed in the <a href="/sitemap/" class="link-underline text-ink">sitemap</a>.</p>
+      </noscript>
+    </div>
+  </section>
+</Base>
+
+<template data-search-row>
+  <li class="border-t border-line">
+    <a class="group flex items-center justify-between gap-8 py-6">
+      <span>
+        <span class="meta block" data-row-group></span>
+        <span class="display-sm mt-2 block font-display font-semibold text-ink transition-colors group-hover:text-accent-ink" data-row-title></span>
+        <span class="mt-1 block text-ink-2" data-row-text></span>
+      </span>
+      <Icon name="arrow-right" size={22} class="shrink-0 text-ink transition-transform duration-300 group-hover:translate-x-1" />
+    </a>
+  </li>
+</template>
+
+<script>
+  type Entry = { t: string; u: string; d: string; g: string; k: string };
+
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]')!;
+  const form = document.querySelector<HTMLFormElement>('[data-search-form]')!;
+  const list = document.querySelector<HTMLOListElement>('[data-search-results]')!;
+  const status = document.querySelector<HTMLElement>('[data-search-status]')!;
+  const empty = document.querySelector<HTMLElement>('[data-search-empty]')!;
+  const template = document.querySelector<HTMLTemplateElement>('[data-search-row]')!;
+
+  let index: Entry[] | null = null;
+  let failed = false;
+
+  const load = async () => {
+    if (index || failed) return;
+    status.textContent = 'Loading the index';
+    try {
+      const response = await fetch('/search-index.json');
+      if (!response.ok) throw new Error(String(response.status));
+      index = await response.json();
+    } catch {
+      failed = true;
+    }
+  };
+
+  // Title matches outrank description matches, which outrank keyword matches.
+  const score = (entry: Entry, terms: string[]) => {
+    const title = entry.t.toLowerCase();
+    const text = entry.d.toLowerCase();
+    const keys = entry.k.toLowerCase();
+    let total = 0;
+    for (const term of terms) {
+      let s = 0;
+      if (title === term) s = 12;
+      else if (title.startsWith(term)) s = 9;
+      else if (title.includes(term)) s = 7;
+      else if (text.includes(term)) s = 3;
+      else if (keys.includes(term) || entry.g.toLowerCase().includes(term)) s = 2;
+      if (s === 0) return 0;
+      total += s;
+    }
+    return total;
+  };
+
+  const render = async () => {
+    const query = input.value.trim();
+    const url = new URL(location.href);
+    if (query) url.searchParams.set('q', query);
+    else url.searchParams.delete('q');
+    history.replaceState(null, '', url);
+
+    list.replaceChildren();
+    list.hidden = true;
+    empty.hidden = true;
+    if (query.length < 2) {
+      status.textContent = query ? 'Type at least two characters' : '';
+      return;
+    }
+
+    await load();
+    if (!index) {
+      status.textContent = 'Search is unavailable right now. Use the sitemap instead.';
+      return;
+    }
+
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const hits = index
+      .map((entry) => ({ entry, s: score(entry, terms) }))
+      .filter((h) => h.s > 0)
+      .sort((a, b) => b.s - a.s || a.entry.t.localeCompare(b.entry.t))
+      .slice(0, 30);
+
+    status.textContent = `${hits.length} ${hits.length === 1 ? 'result' : 'results'} for “${query}”`;
+    if (hits.length === 0) {
+      empty.hidden = false;
+      return;
+    }
+    for (const { entry } of hits) {
+      const row = template.content.cloneNode(true) as DocumentFragment;
+      row.querySelector('a')!.href = entry.u;
+      row.querySelector('[data-row-group]')!.textContent = entry.g;
+      row.querySelector('[data-row-title]')!.textContent = entry.t;
+      row.querySelector('[data-row-text]')!.textContent = entry.d;
+      list.append(row);
+    }
+    list.hidden = false;
+  };
+
+  let timer = 0;
+  input.addEventListener('input', () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(render, 120);
+  });
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    render();
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-search-suggest]').forEach((button) =>
+    button.addEventListener('click', () => {
+      input.value = button.dataset.searchSuggest ?? '';
+      input.focus();
+      render();
+    }),
+  );
+
+  input.value = new URLSearchParams(location.search).get('q') ?? '';
+  if (input.value) render();
+  else input.focus();
+</script>

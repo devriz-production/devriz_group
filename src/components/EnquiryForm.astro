@@ -1,0 +1,137 @@
+---
+// Contact form. The enquiry type decides which extra fields are shown;
+// /contact/?enquiry=vendor (and media, partnership, feedback) preselects a type.
+import Icon from './Icon.astro';
+import Field from './Field.astro';
+import { sectors } from '../data/sectors';
+import { site } from '../data/site';
+
+const types = [
+  { id: 'general', label: 'General', intro: 'For anything that does not fit the other categories.' },
+  { id: 'partnership', label: 'Partnership', intro: 'For business partnerships, investment and collaboration with a group company.' },
+  { id: 'vendor', label: 'Vendor registration', intro: 'For suppliers and contractors who want to work with the group. Read the supplier code of conduct first.' },
+  { id: 'media', label: 'Media', intro: 'For journalists. Tell us your publication and deadline.' },
+  { id: 'feedback', label: 'Feedback', intro: 'Tell us what worked, what did not, or what is wrong on this website.' },
+];
+
+const vendorCategories = [
+  'Construction materials and subcontracting',
+  'Medical and clinic supplies',
+  'Packaging and raw materials',
+  'IT hardware, software and services',
+  'Logistics and fleet services',
+  'Facility and security services',
+  'Marketing, print and events',
+  'Other',
+];
+---
+
+<form action="/api/enquiry.php" method="post" class="grid gap-7" novalidate data-enquiry-form data-form-kind="contact">
+  <fieldset>
+    <legend class="text-sm font-semibold text-ink">What is your enquiry about?</legend>
+    <div class="mt-3 flex flex-wrap gap-2">
+      {
+        types.map((t, i) => (
+          <label class="type-option">
+            <input type="radio" name="enquiry" value={t.id} checked={i === 0} class="sr-only" data-intro={t.intro} data-label={t.label} />
+            <span class="chip">{t.label}</span>
+          </label>
+        ))
+      }
+    </div>
+    <p class="hint mt-3" data-enquiry-intro>{types[0].intro}</p>
+  </fieldset>
+
+  <p class="border border-line bg-bg-2 px-4 py-3 text-sm text-ink" data-regarding hidden></p>
+  <input type="hidden" name="regarding" value="" />
+
+  <div class="grid gap-7 sm:grid-cols-2">
+    <Field name="name" label="Full name" required autocomplete="name" maxlength={120} />
+    <Field name="email" label="Email" type="email" required autocomplete="email" inputmode="email" />
+    <Field name="phone" label="Phone" type="tel" autocomplete="tel" inputmode="tel" hint="Include the country code if outside India." />
+    <Field name="organisation" label="Organisation" autocomplete="organization" />
+  </div>
+
+  <div class="grid gap-7 sm:grid-cols-2" data-show-for="vendor" hidden>
+    <Field name="vendor_category" label="What do you supply?" type="select" options={vendorCategories} required />
+    <Field name="gstin" label="GSTIN" maxlength={15} hint="15 characters, if registered." />
+    <Field name="city" label="City and state" autocomplete="address-level2" class="sm:col-span-2" />
+  </div>
+
+  <div data-show-for="partnership" hidden>
+    <Field name="sector" label="Sector of interest" type="select" options={sectors.map((s) => s.name)} emptyOption="Not sure yet" />
+  </div>
+
+  <div class="grid gap-7 sm:grid-cols-2" data-show-for="media" hidden>
+    <Field name="publication" label="Publication or outlet" required />
+    <Field name="deadline" label="Deadline" placeholder="For example, 20 October, 5 pm" />
+  </div>
+
+  <Field name="message" label="Message" type="textarea" required rows={6} hint="Up to 4,000 characters." />
+
+  <!-- Honeypot: hidden from people, tempting to bots. -->
+  <div class="absolute -left-[9999px]" aria-hidden="true">
+    <label for="f-website">Leave this field empty</label>
+    <input id="f-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="field" data-field data-required>
+    <label class="flex cursor-pointer items-start gap-3 font-normal text-ink-2">
+      <input type="checkbox" name="consent" value="yes" required class="mt-1 size-5 shrink-0 accent-[var(--ink)]" aria-describedby="f-consent-error" />
+      <span>
+        I agree to Devriz Group using these details to respond to my enquiry, as described in the
+        <a href="/privacy-policy/" class="link-underline text-ink">privacy policy</a>.
+      </span>
+    </label>
+    <p class="error" id="f-consent-error" aria-live="polite" hidden></p>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-5">
+    <button type="submit" class="btn btn-primary" data-submit>
+      <span data-submit-label>Send enquiry</span>
+      <Icon name="arrow-right" size={18} />
+    </button>
+    <p class="hint">Fields marked * are required.</p>
+  </div>
+
+  <div class="border border-line bg-bg-2 p-6" role="alert" data-form-error hidden>
+    <p class="font-display text-lg font-semibold text-ink">This could not be sent from the website.</p>
+    <p class="mt-2 text-ink-2">
+      Nothing you typed is lost. You can send the same details by email, or call the corporate office on
+      <a href={site.phoneHref} class="link-underline text-ink">{site.phone}</a>.
+    </p>
+    <a href={`mailto:${site.email}`} class="btn btn-ink mt-5" data-mailto>
+      Send by email instead
+      <Icon name="envelope-simple" size={18} />
+    </a>
+  </div>
+</form>
+
+<div class="border border-line bg-surface p-8 lg:p-10" role="status" tabindex="-1" data-form-success hidden>
+  <Icon name="check-circle" size={40} class="text-accent-ink" />
+  <h3 class="display-md mt-5">Thank you. Your enquiry has been sent.</h3>
+  <p class="mt-4 max-w-[52ch] text-ink-2">It has reached the corporate office in Noida. We will reply to the email address you gave us.</p>
+  <a href="/" class="link-arrow mt-7">
+    Back to the homepage
+    <Icon name="arrow-right" size={18} />
+  </a>
+</div>
+
+<style>
+  .type-option {
+    cursor: pointer;
+  }
+  .type-option input:checked + .chip {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+  .type-option input:focus-visible + .chip {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+</style>
+
+<script>
+  import '../scripts/forms.ts';
+</script>

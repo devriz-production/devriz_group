@@ -1,0 +1,80 @@
+---
+// Opening block for every inner page: breadcrumb trail, title, one-paragraph lede.
+import Icon from './Icon.astro';
+import Media from './Media.astro';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  lede?: string;
+  crumbs?: Crumb[];
+  kicker?: string;
+  image?: { id: string; alt: string; fallback?: string | string[]; position?: string };
+  narrow?: boolean;
+}
+
+const { title, lede, crumbs = [], kicker, image, narrow = false } = Astro.props;
+---
+
+<section class="border-b border-line">
+  <div class="wrap pb-12 pt-8 lg:pb-16 lg:pt-10">
+    {
+      crumbs.length > 0 && (
+        <nav aria-label="Breadcrumb">
+          <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] text-ink-3">
+            <li>
+              <a href="/" class="transition-colors hover:text-ink">
+                Home
+              </a>
+            </li>
+            {crumbs.map((c, i) => (
+              <li class="flex items-center gap-x-2">
+                <Icon name="caret-right" size={11} />
+                {c.href && i < crumbs.length - 1 ? (
+                  <a href={c.href} class="transition-colors hover:text-ink">
+                    {c.label}
+                  </a>
+                ) : (
+                  <span aria-current="page" class="text-ink-2">
+                    {c.label}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    <div class:list={['mt-10 lg:mt-14', narrow ? 'max-w-3xl' : 'max-w-5xl']}>
+      {kicker && <p class="eyebrow mb-5">{kicker}</p>}
+      <h1 class="display-lg">{title}</h1>
+      {lede && <p class="lede mt-6">{lede}</p>}
+      {
+        Astro.slots.has('default') && (
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <slot />
+          </div>
+        )
+      }
+    </div>
+  </div>
+  {
+    image && (
+      <div class="wrap pb-12 lg:pb-16">
+        <Media
+          id={image.id}
+          alt={image.alt}
+          fallback={image.fallback}
+          position={image.position}
+          sizes="(min-width: 1360px) 1264px, 100vw"
+          class="aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]"
+          priority
+        />
+      </div>
+    )
+  }
+</section>

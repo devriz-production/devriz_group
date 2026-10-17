@@ -1,0 +1,164 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import Media from '../../components/Media.astro';
+import CompanyCard from '../../components/CompanyCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { companies, companiesIn, type Company } from '../../data/companies';
+import { getSector } from '../../data/sectors';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return companies.map((company) => ({ params: { slug: company.slug }, props: { company } }));
+}
+
+interface Props {
+  company: Company;
+}
+
+const { company } = Astro.props;
+const sector = getSector(company.sector);
+const siblings = companiesIn(company.sector).filter((c) => c.slug !== company.slug);
+const crumbs = [{ label: 'Companies', href: '/companies/' }, { label: company.name }];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: company.legalName,
+  alternateName: company.name,
+  description: company.summary,
+  url: company.website?.href ?? `${site.url}/companies/${company.slug}/`,
+  parentOrganization: { '@id': `${site.url}/#organization` },
+};
+---
+
+<Base title={company.name} description={`${company.name}: ${company.summary} Part of Devriz Group.`} crumbs={crumbs} schema={schema}>
+  <PageHead title={company.name} lede={company.summary} crumbs={crumbs} kicker={sector.name}>
+    {
+      company.website && (
+        <a href={company.website.href} target="_blank" rel="noopener" class="btn btn-ink" aria-label={`View business: ${company.website.label} (opens in a new tab)`}>
+          View business
+          <Icon name="arrow-up-right" size={18} />
+        </a>
+      )
+    }
+  </PageHead>
+
+  <section class="section">
+    <div class="wrap grid gap-x-16 gap-y-12 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <Media
+          id={`company-${company.slug}`}
+          fallback={sector.image}
+          alt={`${company.name}, part of the ${sector.name.toLowerCase()} business of Devriz Group`}
+          ratio="16/10"
+          sizes="(min-width: 1024px) 56vw, 100vw"
+          priority
+        />
+        <div class="mt-10 grid max-w-[62ch] gap-5 text-[1.0625rem] leading-relaxed" data-reveal>
+          {company.description.map((p) => <p>{p}</p>)}
+        </div>
+
+        <h2 class="display-sm mt-14" data-reveal>Areas of focus</h2>
+        <ul class="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2" data-reveal>
+          {
+            company.focus.map((f) => (
+              <li class="flex items-start gap-3 text-ink">
+                <Icon name="check" size={20} class="mt-0.5 shrink-0 text-accent-ink" />
+                {f}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <aside class="self-start lg:sticky lg:top-28 lg:col-span-4 lg:col-start-9">
+        <dl class="border border-line bg-surface">
+          <div class="border-b border-line p-6">
+            <dt class="meta">Registered name</dt>
+            <dd class="mt-2 font-medium text-ink">{company.legalName}</dd>
+          </div>
+          <div class="border-b border-line p-6">
+            <dt class="meta">Sector</dt>
+            <dd class="mt-2">
+              <a href={`/businesses/${sector.slug}/`} class="link-underline font-medium text-ink">{sector.name}</a>
+            </dd>
+          </div>
+          <div class="border-b border-line p-6">
+            <dt class="meta">Type</dt>
+            <dd class="mt-2 font-medium text-ink">{company.entity}</dd>
+          </div>
+          {
+            company.location && (
+              <div class="border-b border-line p-6">
+                <dt class="meta">Location</dt>
+                <dd class="mt-2 font-medium text-ink">{company.location}</dd>
+              </div>
+            )
+          }
+          {
+            company.website && (
+              <div class="border-b border-line p-6">
+                <dt class="meta">Website</dt>
+                <dd class="mt-2">
+                  <a href={company.website.href} target="_blank" rel="noopener" class="link-underline inline-flex items-center gap-1.5 font-medium text-ink">
+                    {company.website.label}
+                    <Icon name="arrow-up-right" size={14} />
+                  </a>
+                </dd>
+              </div>
+            )
+          }
+          <div class="p-6">
+            <dt class="meta">Group</dt>
+            <dd class="mt-2 font-medium text-ink">Devriz Group</dd>
+          </div>
+        </dl>
+        <a href={`/contact/?enquiry=partnership&company=${company.slug}`} class="btn btn-primary mt-5 w-full">
+          Contact us
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap grid gap-x-16 gap-y-8 lg:grid-cols-12">
+      <div class="lg:col-span-5" data-reveal>
+        <h2 class="display-md">Run to the group standard</h2>
+      </div>
+      <div class="grid gap-5 text-[1.0625rem] leading-relaxed lg:col-span-6 lg:col-start-7" data-reveal style="--i:1">
+        <p>
+          {company.name} has its own leadership and its own market. Like every Devriz Group company, it answers to a common standard for
+          governance, reporting and quality, overseen by the Chairman’s Office.
+        </p>
+        <a href="/about/governance/" class="link-arrow w-fit">
+          How the group is governed
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {
+    siblings.length > 0 && (
+      <section class="section">
+        <div class="wrap">
+          <h2 class="display-md" data-reveal>
+            {`Also in ${sector.name.toLowerCase()}`}
+          </h2>
+          <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {siblings.map((c, i) => (
+              <li data-reveal style={`--i:${i % 3}`}>
+                <CompanyCard company={c} showSector={false} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBand heading="Looking for another company?" text="Browse all Devriz Group companies by sector." label="View all companies" href="/companies/" />
+</Base>

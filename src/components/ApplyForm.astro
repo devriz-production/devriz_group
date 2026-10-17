@@ -1,0 +1,117 @@
+---
+// Careers application. Posts to the same endpoint as the contact form.
+import Icon from './Icon.astro';
+import Field from './Field.astro';
+import { roles, applyProfiles, experienceOptions } from '../data/careers';
+import { site } from '../data/site';
+
+const slugFor = (title: string) => roles.find((r) => r.title === title)?.slug;
+---
+
+<form action="/api/enquiry.php" method="post" class="grid gap-7" novalidate data-enquiry-form data-form-kind="careers">
+  <div class="grid gap-7 sm:grid-cols-2">
+    <Field idPrefix="a" name="name" label="Full name" required autocomplete="name" maxlength={120} />
+    <Field idPrefix="a" name="phone" label="Mobile number" type="tel" required autocomplete="tel" inputmode="tel" />
+    <Field idPrefix="a" name="email" label="Email" type="email" autocomplete="email" inputmode="email" />
+    <Field idPrefix="a" name="city" label="Current city" required autocomplete="address-level2" />
+
+    <div class="field" data-field data-required>
+      <label for="a-role">
+        Applying for
+        <span class="req" aria-hidden="true" data-req> *</span>
+      </label>
+      <select id="a-role" name="role" class="input" required aria-describedby="a-role-error">
+        <option value="">Select a profile</option>
+        {
+          applyProfiles.map((p) => (
+            <option value={p} data-slug={slugFor(p)}>
+              {p}
+            </option>
+          ))
+        }
+      </select>
+      <p class="error" id="a-role-error" aria-live="polite" hidden></p>
+    </div>
+
+    <Field idPrefix="a" name="experience" label="Total experience" type="select" options={experienceOptions} required />
+    <Field idPrefix="a" name="current_salary" label="Current salary" placeholder="Per month or per year" />
+    <Field idPrefix="a" name="expected_salary" label="Expected salary" placeholder="Per month or per year" />
+    <Field idPrefix="a" name="notice_period" label="Notice period" placeholder="For example, 15 days" />
+    <Field idPrefix="a" name="portfolio" label="Portfolio or work sample link" type="url" inputmode="url" placeholder="https://" />
+    <Field
+      idPrefix="a"
+      name="resume"
+      label="Resume link"
+      type="url"
+      inputmode="url"
+      required
+      placeholder="https://"
+      hint="A Google Drive, OneDrive or Dropbox link that anyone with the link can open."
+      class="sm:col-span-2"
+    />
+  </div>
+
+  <Field
+    idPrefix="a"
+    name="summary"
+    label="Work experience summary"
+    type="textarea"
+    required
+    rows={6}
+    hint="Be specific. “Handled 80 calls a day, maintained the CRM, converted 12 to 15 leads a week” tells us more than “I am hardworking”."
+  />
+
+  <div class="absolute -left-[9999px]" aria-hidden="true">
+    <label for="a-website">Leave this field empty</label>
+    <input id="a-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="field" data-field data-required>
+    <label class="flex cursor-pointer items-start gap-3 font-normal text-ink-2">
+      <input type="checkbox" name="consent" value="yes" required class="mt-1 size-5 shrink-0 accent-[var(--ink)]" aria-describedby="a-consent-error" />
+      <span>
+        I agree to Devriz Group using these details to assess my application, as described in the
+        <a href="/privacy-policy/" class="link-underline text-ink">privacy policy</a>. I understand that Devriz Group never asks candidates for
+        money.
+      </span>
+    </label>
+    <p class="error" id="a-consent-error" aria-live="polite" hidden></p>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-5">
+    <button type="submit" class="btn btn-primary" data-submit>
+      <span data-submit-label>Submit application</span>
+      <Icon name="arrow-right" size={18} />
+    </button>
+    <p class="hint">Fields marked * are required. Incomplete applications are not shortlisted.</p>
+  </div>
+
+  <div class="border border-line bg-bg-2 p-6" role="alert" data-form-error hidden>
+    <p class="font-display text-lg font-semibold text-ink">This could not be sent from the website.</p>
+    <p class="mt-2 text-ink-2">
+      Nothing you typed is lost. You can send the same details by email, or call the corporate office on
+      <a href={site.phoneHref} class="link-underline text-ink">{site.phone}</a>.
+    </p>
+    <a href={`mailto:${site.email}`} class="btn btn-ink mt-5" data-mailto>
+      Send by email instead
+      <Icon name="envelope-simple" size={18} />
+    </a>
+  </div>
+</form>
+
+<div class="border border-line bg-surface p-8 lg:p-10" role="status" tabindex="-1" data-form-success hidden>
+  <Icon name="check-circle" size={40} class="text-accent-ink" />
+  <h3 class="display-md mt-5">Thank you. Your application has been sent.</h3>
+  <p class="mt-4 max-w-[52ch] text-ink-2">
+    If your profile is shortlisted, HR will contact you by call, WhatsApp or email to arrange screening. We never ask candidates for money at any
+    stage.
+  </p>
+  <a href="/careers/recruitment-fraud-alert/" class="link-arrow mt-7">
+    Read the recruitment fraud alert
+    <Icon name="arrow-right" size={18} />
+  </a>
+</div>
+
+<script>
+  import '../scripts/forms.ts';
+</script>

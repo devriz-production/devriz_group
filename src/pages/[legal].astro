@@ -1,0 +1,13 @@
+---
+// Website-level documents that live at the root: /privacy-policy/, /disclaimer/ and so on.
+import PolicyPage from '../components/PolicyPage.astro';
+import { rootPolicies } from '../lib/policies';
+
+export function getStaticPaths() {
+  return rootPolicies.map((p) => ({ params: { legal: p.slug } }));
+}
+
+const { legal } = Astro.params;
+---
+
+<PolicyPage slug={legal!} />

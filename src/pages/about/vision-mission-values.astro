@@ -1,0 +1,133 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+const crumbs = [{ label: 'About', href: '/about/' }, { label: 'Vision, mission and values' }];
+
+const commitments = ['Responsible business practices', 'Quality-driven service delivery', 'Innovation grounded in real needs', 'Long-term thinking over short-term gains'];
+
+const pillars = [
+  'Deliver high-quality products and services across all verticals.',
+  'Build systems that support operational efficiency and compliance.',
+  'Invest in people, training and leadership development.',
+  'Adopt technology as a growth enabler, not a shortcut.',
+];
+
+const maxims = ['Discipline before expansion.', 'Execution before promises.', 'Systems before shortcuts.'];
+
+const values = [
+  { icon: 'handshake', title: 'Trust and transparency', text: 'Ethical conduct, honest communication and clear governance structures form the foundation of the group’s credibility.' },
+  { icon: 'target', title: 'Execution excellence', text: 'The focus is on outcomes, not promises. Strategy means nothing without disciplined execution.' },
+  { icon: 'users-three', title: 'People-first culture', text: 'Employees, partners and customers are treated as long-term stakeholders, not transactional resources.' },
+  { icon: 'hourglass-medium', title: 'Long-term thinking', text: 'Sustainable growth is prioritised over aggressive short-term expansion.' },
+  { icon: 'globe-hemisphere-east', title: 'Responsibility to society', text: 'The group acknowledges its role beyond business: toward community, environment and compliance.' },
+];
+---
+
+<Base
+  title="Vision, mission and values"
+  description="The vision, mission and core values of Devriz Group: sustainable, ethically governed businesses built through systems, capable teams and accountable leadership."
+  crumbs={crumbs}
+>
+  <PageHead
+    title="Vision, mission and values"
+    lede="A clear vision, a practical mission, and values that keep execution sharp."
+    crumbs={crumbs}
+    narrow
+  />
+
+  <!-- Vision -->
+  <section class="section">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-3">
+        <h2 class="eyebrow">Vision</h2>
+      </div>
+      <div class="lg:col-span-9" data-reveal>
+        <p class="display-lg font-display font-semibold text-ink">
+          To build respected Indian enterprises across healthcare, aesthetics, education, technology and infrastructure.
+        </p>
+        <p class="lede mt-8">
+          That means sustainable, scalable and ethically governed businesses that deliver long-term value to customers, partners, employees and
+          society. The vision goes beyond revenue.
+        </p>
+        <ul class="mt-10 grid gap-x-8 gap-y-3 border-t border-line pt-8 sm:grid-cols-2">
+          {
+            commitments.map((c) => (
+              <li class="flex items-start gap-3 text-ink">
+                <Icon name="check" size={20} class="mt-0.5 shrink-0 text-accent-ink" />
+                {c}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission -->
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-3">
+        <h2 class="eyebrow">Mission</h2>
+      </div>
+      <div class="lg:col-span-9" data-reveal>
+        <p class="display-md font-display font-semibold text-ink">
+          To scale brands through systems, capable teams, ethical service delivery and accountable leadership.
+        </p>
+        <p class="lede mt-6">Vision defines direction. Mission defines action. Ours is execution: turning ideas into measurable outcomes.</p>
+        <ol class="mt-10 grid gap-5 sm:grid-cols-2">
+          {
+            pillars.map((p) => (
+              <li class="border border-line bg-surface p-6 text-ink">
+                {p}
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Maxims -->
+  <section class="section">
+    <div class="wrap">
+      <ul class="grid gap-y-2">
+        {
+          maxims.map((m, i) => (
+            <li class="display-xl font-display font-semibold text-ink" data-reveal style={`--i:${i}`}>
+              {m}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="lede mt-8" data-reveal>Three rules the group applies to every vertical, in that order.</p>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="section border-t border-line">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="self-start lg:sticky lg:top-28 lg:col-span-4" data-reveal>
+        <h2 class="display-md">Core values</h2>
+        <p class="mt-4 max-w-[38ch] text-ink-2">These are operating principles, used in leadership decisions at every level.</p>
+      </div>
+      <ul class="border-b border-line lg:col-span-8">
+        {
+          values.map((v, i) => (
+            <li class="grid grid-cols-[auto_1fr] gap-x-6 border-t border-line py-7" data-reveal style={`--i:${i}`}>
+              <Icon name={v.icon} size={30} class="mt-1 text-accent-ink" />
+              <div>
+                <h3 class="display-sm">{v.title}</h3>
+                <p class="mt-2 max-w-[56ch] text-ink-2">{v.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand heading="See the values at work." text="Read how the Chairman’s Office holds every company to the same standard." label="Governance" href="/about/governance/" />
+</Base>

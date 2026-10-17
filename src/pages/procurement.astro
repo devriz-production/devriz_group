@@ -1,0 +1,120 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+const crumbs = [{ label: 'Procurement' }];
+
+const categories = [
+  { icon: 'buildings', title: 'Construction', text: 'Building materials, plant and equipment, and specialist subcontracting for the group’s construction companies.' },
+  { icon: 'first-aid-kit', title: 'Healthcare and clinics', text: 'Clinic consumables, devices and equipment, and ingredients and packaging for skincare products.' },
+  { icon: 'cpu', title: 'Technology', text: 'Hardware, software, hosting and specialist IT services.' },
+  { icon: 'truck', title: 'Logistics', text: 'Courier and transport partners, fleet services and warehousing.' },
+  { icon: 'shield-check', title: 'Facilities and security', text: 'Office and site services, maintenance, safety equipment and uniforms.' },
+  { icon: 'megaphone', title: 'Marketing and print', text: 'Design, print, production and event services.' },
+];
+
+const steps = [
+  { title: 'Register', text: 'Send your details through the vendor registration form: what you supply, where you operate and your GSTIN if registered.' },
+  { title: 'Review', text: 'The relevant group company reviews your registration against its current requirements.' },
+  { title: 'Onboarding', text: 'If there is a fit, you are asked for documents and to confirm that you will follow the supplier code of conduct.' },
+  { title: 'Orders', text: 'Work begins only against a written purchase order or contract from the group company you are supplying.' },
+];
+
+const expectations = [
+  'Comply with the law, including labour, tax, safety and environmental law.',
+  'No child labour or forced labour, anywhere in your operations.',
+  'Safe working conditions, with particular care on construction sites.',
+  'No bribes, gifts or favours to win or keep business.',
+  'Quality that matches what was agreed, delivered when it was agreed.',
+  'Protect confidential information and personal data.',
+];
+---
+
+<Base
+  title="Procurement"
+  description="How to become a supplier to Devriz Group: what the group buys, how vendor registration works and what is expected of suppliers."
+  crumbs={crumbs}
+>
+  <PageHead
+    title="Supplying to Devriz Group"
+    lede="Group companies buy across construction, healthcare, technology, logistics and services. We look for suppliers who deliver what they promise and work to a clear standard."
+    crumbs={crumbs}
+    narrow
+  >
+    <a href="/contact/?enquiry=vendor" class="btn btn-primary">
+      Register as a vendor
+      <Icon name="arrow-right" size={18} />
+    </a>
+    <a href="/policies/supplier-code-of-conduct/" class="btn btn-outline">Supplier code of conduct</a>
+  </PageHead>
+
+  <section class="section">
+    <div class="wrap">
+      <h2 class="display-lg" data-reveal>What we buy</h2>
+      <ul class="mt-12 grid gap-px border border-line bg-line sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+        {
+          categories.map((c, i) => (
+            <li class="bg-bg p-7 lg:p-9" data-reveal="fade" style={`--i:${i}`}>
+              <Icon name={c.icon} size={30} class="text-accent-ink" />
+              <h3 class="display-sm mt-6">{c.title}</h3>
+              <p class="mt-3 text-ink-2">{c.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="self-start lg:sticky lg:top-28 lg:col-span-5" data-reveal>
+        <h2 class="display-md">How registration works</h2>
+        <p class="mt-5 max-w-[44ch] text-ink-2">
+          Registration puts you on record with the group. It is not a commitment to buy, and no one may ask you for payment to register.
+        </p>
+      </div>
+      <ol class="border-b border-line-2 lg:col-span-6 lg:col-start-7">
+        {
+          steps.map((step, i) => (
+            <li class="border-t border-line-2 py-6" data-reveal style={`--i:${i}`}>
+              <h3 class="display-sm">{step.title}</h3>
+              <p class="mt-2 max-w-[52ch] text-ink-2">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-5" data-reveal>
+        <h2 class="display-md">What we expect of suppliers</h2>
+        <p class="mt-5 max-w-[44ch] text-ink-2">The full expectations are set out in the supplier code of conduct. In short:</p>
+        <a href="/policies/supplier-code-of-conduct/" class="link-arrow mt-6">
+          Read the supplier code
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+      <ul class="grid gap-4 self-start lg:col-span-6 lg:col-start-7" data-reveal style="--i:1">
+        {
+          expectations.map((e) => (
+            <li class="flex items-start gap-3 text-[1.0625rem] text-ink-2">
+              <Icon name="check" size={20} class="mt-1 shrink-0 text-accent-ink" />
+              {e}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="A concern about procurement?"
+    text="If anyone asks for money or favours in exchange for business with the group, tell us. Reports are handled in confidence."
+    label="Grievance redressal"
+    href="/policies/grievance-redressal/"
+  />
+</Base>

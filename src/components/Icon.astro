@@ -1,0 +1,32 @@
+---
+// Phosphor icons, inlined at build time from the Iconify set. One family site-wide.
+import ph from '@iconify-json/ph/icons.json';
+
+interface Props {
+  name: string;
+  size?: number | string;
+  class?: string;
+  label?: string;
+}
+
+const { name, size = 20, class: cls, label } = Astro.props;
+const set = ph as unknown as {
+  icons: Record<string, { body: string }>;
+  aliases?: Record<string, { parent: string }>;
+};
+const icon = set.icons[name] ?? set.icons[set.aliases?.[name]?.parent ?? ''];
+if (!icon) throw new Error(`Unknown Phosphor icon "${name}"`);
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 256 256"
+  width={size}
+  height={size}
+  class={cls}
+  aria-hidden={label ? undefined : 'true'}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  focusable="false"
+  set:html={icon.body}
+/>

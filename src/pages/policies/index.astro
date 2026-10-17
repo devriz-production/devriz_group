@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { policies } from '../../lib/policies';
+import { formatDate } from '../../data/site';
+
+const crumbs = [{ label: 'Policies' }];
+const groups = [
+  { id: 'Conduct', heading: 'Conduct and accountability', text: 'How we expect our people and our suppliers to behave, and how to tell us when something has gone wrong.' },
+  { id: 'Website', heading: 'This website', text: 'The terms for using devrizgroup.com and how we handle the information you share with us.' },
+  { id: 'Careers', heading: 'Careers', text: 'Guidance for candidates on staying safe from recruitment fraud.' },
+] as const;
+---
+
+<Base title="Corporate policies" description="Devriz Group policies: code of conduct, supplier code, grievance redressal, privacy, terms, cookies and accessibility." crumbs={crumbs}>
+  <PageHead
+    title="Corporate policies"
+    lede="The standards Devriz Group holds itself to, written so that anyone can read them."
+    crumbs={crumbs}
+    narrow
+  />
+
+  <div class="wrap py-6 lg:py-10">
+    {
+      groups.map((group) => (
+        <section class="grid gap-x-16 gap-y-8 border-b border-line py-12 lg:grid-cols-12 lg:py-16">
+          <div class="lg:col-span-4">
+            <h2 class="display-sm">{group.heading}</h2>
+            <p class="mt-3 max-w-[40ch] text-ink-2">{group.text}</p>
+          </div>
+          <ul class="grid gap-5 sm:grid-cols-2 lg:col-span-8">
+            {policies
+              .filter((p) => p.group === group.id)
+              .map((p) => (
+                <li>
+                  <a href={p.href} class="group flex h-full flex-col border border-line bg-surface p-6 transition-colors hover:border-ink lg:p-7">
+                    <span class="font-display text-xl font-semibold tracking-tight text-ink">{p.title}</span>
+                    <span class="mt-3 flex-1 text-[0.9375rem] text-ink-2">{p.description}</span>
+                    <span class="mt-8 flex items-center justify-between">
+                      <span class="meta">Updated {formatDate(p.updated)}</span>
+                      <Icon name="arrow-right" size={18} class="text-ink transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  <CtaBand heading="Something to raise?" text="Use the grievance process for concerns, or write to the corporate office about anything in these documents." />
+</Base>

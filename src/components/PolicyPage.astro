@@ -1,0 +1,73 @@
+---
+// Shared page for every policy document: title block, contents rail, long-form body.
+import Base from '../layouts/Base.astro';
+import PageHead from './PageHead.astro';
+import Icon from './Icon.astro';
+import { getPolicy, policies } from '../lib/policies';
+import { formatDate } from '../data/site';
+
+interface Props {
+  slug: string;
+  parent?: { label: string; href: string };
+}
+
+const { slug, parent = { label: 'Policies', href: '/policies/' } } = Astro.props;
+const doc = getPolicy(slug);
+const { Content } = doc;
+const sections = doc.headings.filter((h) => h.depth === 2);
+const related = policies.filter((p) => p.slug !== slug && p.group === doc.group).slice(0, 4);
+const crumbs = [parent, { label: doc.title }];
+---
+
+<Base title={doc.title} description={doc.description} crumbs={crumbs}>
+  <PageHead title={doc.title} lede={doc.summary} crumbs={crumbs} narrow>
+    <p class="meta">Last updated {formatDate(doc.updated)}</p>
+    <button type="button" class="link-arrow no-print text-sm" onclick="window.print()">
+      <Icon name="printer" size={16} />
+      Print this page
+    </button>
+  </PageHead>
+
+  <div class="wrap grid gap-x-16 gap-y-10 py-14 lg:grid-cols-12 lg:py-20">
+    <aside class="no-print lg:col-span-4">
+      <nav aria-label="On this page" class="lg:sticky lg:top-28">
+        <p class="meta">On this page</p>
+        <ol class="mt-4 grid gap-2 border-l border-line text-[0.9375rem]">
+          {
+            sections.map((h) => (
+              <li>
+                <a href={`#${h.slug}`} class="-ml-px block border-l border-transparent py-0.5 pl-4 text-ink-2 transition-colors hover:border-accent hover:text-ink">
+                  {h.text}
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+    </aside>
+
+    <article class="prose lg:col-span-8">
+      <Content />
+    </article>
+  </div>
+
+  {
+    related.length > 0 && (
+      <section class="no-print border-t border-line">
+        <div class="wrap py-14 lg:py-20">
+          <h2 class="display-sm">Related documents</h2>
+          <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {related.map((p) => (
+              <li>
+                <a href={p.href} class="group flex h-full flex-col justify-between gap-8 border border-line bg-surface p-6 transition-colors hover:border-ink">
+                  <span class="font-display text-lg font-semibold tracking-tight text-ink">{p.title}</span>
+                  <Icon name="arrow-right" size={18} class="text-ink transition-transform duration-300 group-hover:translate-x-1" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+</Base>

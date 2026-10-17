@@ -1,0 +1,153 @@
+---
+// A short overview of the group in Hindi. The rest of the site is in English.
+import '@fontsource-variable/noto-sans-devanagari/wght.css';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Media from '../components/Media.astro';
+import { site } from '../data/site';
+import { chairman } from '../data/people';
+
+const sectors = [
+  { slug: 'healthcare-wellness', name: 'स्वास्थ्य और वेलनेस', text: 'डॉक्टर के परामर्श पर आधारित त्वचा, बाल और शरीर की देखभाल, स्किनकेयर उत्पाद और क्लिनिक उपचार।' },
+  { slug: 'technology-security', name: 'प्रौद्योगिकी और सुरक्षा', text: 'आईटी इन्फ्रास्ट्रक्चर, वेबसाइट और ऐप, होस्टिंग, साइबर सुरक्षा और सुरक्षा कर्मी सेवाएँ।' },
+  { slug: 'infrastructure-real-estate', name: 'इन्फ्रास्ट्रक्चर और रियल एस्टेट', text: 'आवासीय, व्यावसायिक और सिविल निर्माण कार्य।' },
+  { slug: 'consumer-fmcg', name: 'उपभोक्ता उत्पाद और एफएमसीजी', text: 'कृषि आधारित उत्पाद और सौंदर्य, जीवनशैली तथा व्यक्तिगत देखभाल।' },
+  { slug: 'agriculture-trading', name: 'कृषि और व्यापार', text: 'कृषि भूमि और उपज का प्रबंधन, चारा और खाद्यान्न व्यापार, और वृक्ष खेती।' },
+  { slug: 'logistics-transport', name: 'लॉजिस्टिक्स और परिवहन', text: 'परिवहन और लॉजिस्टिक्स सेवाएँ, तय प्रक्रिया के साथ।' },
+  { slug: 'education-skilling', name: 'शिक्षा और कौशल विकास', text: 'एस्थेटिक और स्किनकेयर का व्यावहारिक प्रशिक्षण।' },
+];
+
+const figures = [
+  { value: '7', label: 'व्यावसायिक क्षेत्र' },
+  { value: '20+', label: 'संचालित कंपनियाँ' },
+  { value: '2,000+', label: 'टीम सदस्य' },
+  { value: '3', label: 'राज्यों में उपस्थिति' },
+];
+---
+
+<Base title="हिन्दी में परिचय" description="Devriz Group का संक्षिप्त परिचय हिन्दी में: समूह, उसके सात व्यावसायिक क्षेत्र, नेतृत्व और संपर्क जानकारी।">
+  <div lang="hi">
+    <section class="border-b border-line">
+      <div class="wrap pb-14 pt-10 lg:pb-20 lg:pt-14">
+        <p class="eyebrow">{site.motto}</p>
+        <h1 class="display-lg mt-6">व्यवस्था पर निर्मित। अनुशासन से विकसित।</h1>
+        <p class="lede mt-7">
+          Devriz Group स्वास्थ्य सेवा, प्रौद्योगिकी, इन्फ्रास्ट्रक्चर, उपभोक्ता उत्पाद, कृषि, लॉजिस्टिक्स और शिक्षा के क्षेत्रों में कंपनियाँ बनाता और चलाता है।
+        </p>
+        <p class="mt-6 max-w-[62ch] text-ink-3">
+          यह पृष्ठ समूह का संक्षिप्त परिचय है। विस्तृत जानकारी अंग्रेज़ी में उपलब्ध है।
+          <a href="/" lang="en" class="link-underline text-ink">English website</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+        <div class="lg:col-span-7">
+          <h2 class="display-md">समूह के बारे में</h2>
+          <div class="mt-7 grid max-w-[62ch] gap-5 text-[1.0625rem] leading-loose">
+            <p>
+              Devriz Group एक विविध भारतीय व्यावसायिक समूह है, जिसका कॉर्पोरेट कार्यालय नोएडा (दिल्ली एनसीआर) में है। समूह दिल्ली, उत्तर प्रदेश और बिहार में कार्य करता है।
+            </p>
+            <p>
+              हर कंपनी का अपना नेतृत्व और अपना बाज़ार है। सभी कंपनियाँ शासन, रिपोर्टिंग और गुणवत्ता के एक ही मानक का पालन करती हैं। समूह का मानना है कि विस्तार से पहले
+              व्यवस्था आती है।
+            </p>
+          </div>
+        </div>
+        <dl class="grid grid-cols-2 gap-px self-start border border-line bg-line lg:col-span-5">
+          {
+            figures.map((f) => (
+              <div class="flex flex-col-reverse gap-2 bg-surface p-6">
+                <dt class="text-sm text-ink-3">{f.label}</dt>
+                <dd class="figure text-4xl" lang="en">{f.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <section class="section border-y border-line bg-bg-2">
+      <div class="wrap grid items-center gap-x-16 gap-y-10 lg:grid-cols-12">
+        <div class="lg:col-span-4">
+          <Media id={chairman.image} alt="श्री कृष्ण कुमार सिंह, अध्यक्ष, Devriz Group" ratio="4/5" sizes="(min-width: 1024px) 30vw, 100vw" position="50% 20%" />
+        </div>
+        <div class="lg:col-span-8">
+          <p class="eyebrow">अध्यक्ष का संदेश</p>
+          <blockquote class="display-md mt-6 font-display font-semibold text-ink">“सच्ची प्रगति संरचना, विश्वास और दीर्घकालिक सोच पर टिकी होती है।”</blockquote>
+          <p class="mt-7 max-w-[60ch] text-[1.0625rem] leading-loose">
+            हम अनुशासित कार्यान्वयन, नैतिक नेतृत्व और ऐसी व्यवस्थाओं पर ध्यान देते हैं जो समूह के हर व्यवसाय में दीर्घकालिक मूल्य बनाती हैं।
+          </p>
+          <p class="mt-8 border-t border-line-2 pt-6">
+            <span class="block text-xl font-semibold text-ink">श्री कृष्ण कुमार सिंह</span>
+            <span class="mt-1 block text-sm text-ink-3">अध्यक्ष, Devriz Group</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2 class="display-md">सात व्यावसायिक क्षेत्र</h2>
+        <ul class="mt-10 border-b border-line">
+          {
+            sectors.map((s) => (
+              <li class="border-t border-line">
+                <a href={`/businesses/${s.slug}/`} class="group flex items-center justify-between gap-8 py-6">
+                  <span>
+                    <span class="display-sm block font-display font-semibold text-ink">{s.name}</span>
+                    <span class="mt-2 block max-w-[64ch] text-ink-2">{s.text}</span>
+                  </span>
+                  <Icon name="arrow-up-right" size={22} class="shrink-0 text-ink transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section class="section border-t border-line bg-bg-2">
+      <div class="wrap grid gap-x-16 gap-y-12 lg:grid-cols-2">
+        <div>
+          <h2 class="display-md">समाज के प्रति दायित्व</h2>
+          <p class="mt-6 max-w-[56ch] text-[1.0625rem] leading-loose">
+            Environment &amp; Human Welfare Trust, Nandani Gaushala और Pehlagarh Gaushala के माध्यम से समूह समुदाय कल्याण और गौ सेवा में योगदान देता है।
+          </p>
+          <h2 class="display-md mt-14">नौकरी के नाम पर धोखाधड़ी से सावधान</h2>
+          <p class="mt-6 max-w-[56ch] text-[1.0625rem] leading-loose">
+            Devriz Group भर्ती के किसी भी चरण में उम्मीदवारों से पैसे नहीं माँगता। यदि कोई नौकरी के बदले पैसे माँगे, तो भुगतान न करें और हमें सूचित करें।
+          </p>
+          <a href="/careers/recruitment-fraud-alert/" class="link-arrow mt-6">
+            पूरी जानकारी (अंग्रेज़ी में)
+            <Icon name="arrow-right" size={18} />
+          </a>
+        </div>
+        <div>
+          <h2 class="display-md">संपर्क</h2>
+          <dl class="mt-6 border-b border-line-2">
+            <div class="border-t border-line-2 py-5">
+              <dt class="text-sm text-ink-3">कॉर्पोरेट कार्यालय</dt>
+              <dd class="mt-2 leading-relaxed text-ink" lang="en">
+                {site.offices[0].lines.map((line) => <span class="block">{line}</span>)}
+              </dd>
+            </div>
+            <div class="border-t border-line-2 py-5">
+              <dt class="text-sm text-ink-3">फ़ोन</dt>
+              <dd class="mt-2" lang="en"><a href={site.phoneHref} class="link-underline font-medium text-ink">{site.phone}</a></dd>
+            </div>
+            <div class="border-t border-line-2 py-5">
+              <dt class="text-sm text-ink-3">ईमेल</dt>
+              <dd class="mt-2" lang="en"><a href={`mailto:${site.email}`} class="link-underline font-medium text-ink">{site.email}</a></dd>
+            </div>
+          </dl>
+          <a href="/contact/" class="btn btn-primary mt-8">
+            संपर्क करें
+            <Icon name="arrow-right" size={18} />
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>

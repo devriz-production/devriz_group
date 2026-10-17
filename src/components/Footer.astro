@@ -1,0 +1,101 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import logoLight from '../assets/brand/logo-light.png';
+import logoDark from '../assets/brand/logo-dark.png';
+import { site, footerNav, legalNav, formatDate } from '../data/site';
+---
+
+<footer class="border-t border-line bg-bg-2">
+  <div class="wrap grid gap-x-10 gap-y-14 py-16 lg:grid-cols-12 lg:py-20">
+    <div class="lg:col-span-4">
+      <a href="/" class="inline-block" aria-label="Devriz Group home">
+        <Image src={logoLight} alt="" height={160} class="h-14 w-auto dark:hidden" />
+        <Image src={logoDark} alt="" height={160} class="hidden h-14 w-auto dark:block" />
+      </a>
+      <p class="mt-5 text-ink" lang="hi">{site.motto}</p>
+      <p class="text-sm text-ink-3">{site.mottoEnglish}</p>
+
+      <dl class="mt-10 grid gap-8 text-[0.9375rem] sm:grid-cols-2 lg:grid-cols-1">
+        {
+          site.offices.map((office) => (
+            <div>
+              <dt class="meta">{office.label}</dt>
+              <dd class="mt-2 not-italic leading-relaxed text-ink-2">
+                {office.lines.map((line) => (
+                  <span class="block">{line}</span>
+                ))}
+              </dd>
+            </div>
+          ))
+        }
+        <div>
+          <dt class="meta">General enquiries</dt>
+          <dd class="mt-2 grid gap-0.5 leading-relaxed">
+            <a href={site.phoneHref} class="link-underline w-fit text-ink">{site.phone}</a>
+            <a href={`mailto:${site.email}`} class="link-underline w-fit text-ink">{site.email}</a>
+            <span class="text-ink-3">GSTIN {site.gstin}</span>
+          </dd>
+        </div>
+      </dl>
+
+      <ul class="mt-8 flex gap-2">
+        {
+          site.social.map((s) => (
+            <li>
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="grid size-11 place-items-center border border-line-2 text-ink transition-colors hover:border-ink"
+                aria-label={`Devriz Group on ${s.label}`}
+              >
+                <Icon name={s.icon} size={20} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <nav aria-label="Footer" class="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3 lg:col-span-8">
+      {
+        footerNav.map((group) => (
+          <div>
+            <h2 class="meta">{group.heading}</h2>
+            <ul class="mt-4 grid gap-2.5 text-[0.9375rem]">
+              {group.links.map((link) => (
+                <li>
+                  <a href={link.href} class="text-ink-2 transition-colors hover:text-ink">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+  </div>
+
+  <div class="border-t border-line">
+    <div class="wrap flex flex-col gap-6 py-8 text-[0.8125rem] text-ink-3 lg:flex-row lg:items-start lg:justify-between">
+      <ul class="flex flex-wrap gap-x-5 gap-y-2">
+        {
+          legalNav.map((link) => (
+            <li>
+              <a href={link.href} class="transition-colors hover:text-ink">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="shrink-0 lg:text-right">
+        {`© ${new Date(site.updated).getFullYear()} ${site.name}. All rights reserved.`}
+        <br />
+        {`Content owned and maintained by ${site.name}. Last updated ${formatDate(site.updated)}.`}
+      </p>
+    </div>
+  </div>
+</footer>

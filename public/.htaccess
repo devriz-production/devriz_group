@@ -1,0 +1,91 @@
+# Devriz Group: routing and caching for Hostinger (LiteSpeed/Apache).
+#
+# The site is static. Every page is a folder with an index.html, so the server
+# finds pages on its own. This file handles what it cannot work out by itself:
+#   1. the old WordPress addresses that Google and bookmarks still point at
+#   2. caching, so repeat visitors do not re-download fonts and images
+#   3. the 404 page
+#
+# Astro copies public/ to the root of dist/, so this lands next to index.html,
+# which is where Hostinger looks for it in public_html. The directives below
+# follow the same patterns as the Kotil Skin Science site, which runs on the
+# same hosting.
+
+Options -Indexes
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# ---------------------------------------------------------------------------
+# 1. Old WordPress addresses. 301 so search ranking transfers to the new page.
+# ---------------------------------------------------------------------------
+RewriteRule ^the-devriz-group/?$      /about/                                   [R=301,L]
+RewriteRule ^our-journey/?$           /about/our-journey/                       [R=301,L]
+RewriteRule ^chairmans-office/?$      /about/governance/                        [R=301,L]
+RewriteRule ^investors/?$             /about/governance/                        [R=301,L]
+RewriteRule ^dev-singh/?$             /leadership/                              [R=301,L]
+RewriteRule ^businesses-2/?$          /businesses/                              [R=301,L]
+RewriteRule ^services/?$              /businesses/                              [R=301,L]
+RewriteRule ^projects/?$              /businesses/infrastructure-real-estate/   [R=301,L]
+RewriteRule ^healthcare-pharma/?$     /businesses/healthcare-wellness/          [R=301,L]
+RewriteRule ^data-center/?$           /businesses/technology-security/          [R=301,L]
+RewriteRule ^real-estate/?$           /businesses/infrastructure-real-estate/   [R=301,L]
+RewriteRule ^fmcg/?$                  /businesses/consumer-fmcg/                [R=301,L]
+RewriteRule ^transport-logistics/?$   /businesses/logistics-transport/          [R=301,L]
+RewriteRule ^trustee/?$               /impact/                                  [R=301,L]
+RewriteRule ^contact-us/?$            /contact/                                 [R=301,L]
+RewriteRule ^blog/?$                  /newsroom/                                [R=301,L]
+RewriteRule ^hello-world/?$           /newsroom/                                [R=301,L]
+RewriteRule ^devriz-group-vision-mission-multi-sector-growth-journey/?$ /newsroom/vision-mission-multi-sector-growth-journey/ [R=301,L]
+RewriteRule ^devriz-healthcare/?$         /companies/devriz-healthcare/         [R=301,L]
+RewriteRule ^kotil-skin-science/?$        /companies/kotil-skin-science/        [R=301,L]
+RewriteRule ^devriz-fashion-lifestyle/?$  /companies/devriz-fashion-lifestyle/  [R=301,L]
+RewriteRule ^(category|tag|author)/       /newsroom/                            [R=301,L]
+
+# ---------------------------------------------------------------------------
+# 2. The admin panel's data folder is private. It normally sits outside
+#    public_html; this covers the fallback where it has to live inside.
+# ---------------------------------------------------------------------------
+RewriteRule ^dg-data(/|$) - [F,L]
+
+# ---------------------------------------------------------------------------
+# 3. Pages are folders. /about becomes /about/ so there is one address per page.
+# ---------------------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_URI} !/$
+RewriteRule ^(.*)$ /$1/ [R=301,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Everything Astro builds into /_astro/ has a hash in its file name, so it can
+  # be cached for a year. A changed file gets a new name on the next build.
+  SetEnvIf Request_URI "^/_astro/" LONG_CACHE=1
+  Header set Cache-Control "public, max-age=31536000, immutable" env=LONG_CACHE
+
+  # Icons, logo downloads and the social card are replaced in place, so a week.
+  SetEnvIf Request_URI "^/(favicon-32\.png|favicon-48\.png|apple-touch-icon\.png|icon-192\.png|icon-512\.png|og\.jpg|brand/)" WEEK_CACHE=1
+  Header set Cache-Control "public, max-age=604800, stale-while-revalidate=86400" env=WEEK_CACHE
+
+  # HTML is never cached hard, or an upload would not show until caches expire.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType image/webp              .webp
+  AddType font/woff2              .woff2
+  AddType application/manifest+json .webmanifest
+</IfModule>

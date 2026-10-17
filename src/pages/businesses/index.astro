@@ -1,0 +1,95 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import Media from '../../components/Media.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { sectors, inDevelopment } from '../../data/sectors';
+import { companies, companiesIn } from '../../data/companies';
+
+const crumbs = [{ label: 'Businesses' }];
+// Seven sectors, seven cells: two wide tiles bracket a row of three and a row of two.
+const spans = ['lg:col-span-8', 'lg:col-span-4', 'lg:col-span-4', 'lg:col-span-4', 'lg:col-span-4', 'lg:col-span-5', 'lg:col-span-7'];
+---
+
+<Base
+  title="Businesses"
+  description="The seven sectors Devriz Group operates in: healthcare, technology, infrastructure, consumer products, agriculture, logistics and education."
+  crumbs={crumbs}
+>
+  <PageHead
+    title="Seven sectors. One operating standard."
+    lede="Each sector is run by its own companies with their own leadership. What they share is the way they are governed, measured and held to account."
+    crumbs={crumbs}
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <ul class="grid gap-5 lg:grid-cols-12">
+        {
+          sectors.map((s, i) => (
+            <li class={spans[i]} data-reveal style={`--i:${i % 3}`}>
+              <a href={`/businesses/${s.slug}/`} class="tile group flex h-full flex-col border border-line bg-surface transition-colors duration-300 hover:border-ink">
+                <Media
+                  id={s.image}
+                  alt={s.imageAlt}
+                  sizes={i === 0 || i === 6 ? '(min-width: 1024px) 60vw, 100vw' : '(min-width: 1024px) 34vw, 100vw'}
+                  class={i === 0 || i === 6 ? 'aspect-[16/9]' : 'aspect-[4/3]'}
+                  imgClass="tile-img"
+                />
+                <div class="flex flex-1 flex-col justify-between gap-8 p-6 lg:p-8">
+                  <div>
+                    <h2 class:list={[i === 0 || i === 6 ? 'display-md' : 'display-sm']}>{s.name}</h2>
+                    <p class="mt-3 max-w-[52ch] text-ink-2">{s.summary}</p>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="meta">{`${companiesIn(s.slug).length} ${companiesIn(s.slug).length === 1 ? 'company' : 'companies'}`}</span>
+                    <Icon name="arrow-up-right" size={22} class="text-ink transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </div>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-5" data-reveal>
+        <h2 class="display-md">In development</h2>
+        <p class="mt-5 max-w-[48ch] text-ink-2">
+          The group is preparing new verticals. Each will open only when the operating system behind it is ready, the same rule every existing
+          business followed.
+        </p>
+      </div>
+      <ul class="self-start border-b border-line-2 lg:col-span-6 lg:col-start-7">
+        {
+          inDevelopment.map((v, i) => (
+            <li class="flex items-center justify-between gap-6 border-t border-line-2 py-5" data-reveal style={`--i:${i}`}>
+              <span class="display-sm font-display font-semibold text-ink">{v}</span>
+              <Icon name="hourglass-medium" size={20} class="text-ink-3" label="In development" />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    heading={`${companies.length} companies across seven sectors.`}
+    text="Browse the full directory, filter by sector, or search for a company by name."
+    label="View all companies"
+    href="/companies/"
+  />
+</Base>
+
+<style>
+  .tile :global(.tile-img) {
+    transition: transform 1.2s var(--ease-out);
+  }
+  .tile:hover :global(.tile-img) {
+    transform: scale(1.035);
+  }
+</style>

@@ -1,0 +1,223 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import Media from '../../components/Media.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { site, figures } from '../../data/site';
+
+const crumbs = [{ label: 'About' }];
+
+const principles = [
+  { title: 'Independent verticals', text: 'Focused strategies and dedicated leadership for each company.' },
+  { title: 'Group governance', text: 'Shared standards for operations, accountability and quality.' },
+  { title: 'Process-first execution', text: 'Decisions backed by structure and measurement.' },
+  { title: 'Trust and integrity', text: 'Responsible growth over shortcuts.' },
+];
+
+const philosophy = [
+  { icon: 'flow-arrow', title: 'Process before promotion', text: 'We design workflows, governance and accountability first. Scale comes only after stability.' },
+  { icon: 'users-three', title: 'People build companies', text: 'Talent without structure fails. We invest in leadership, training and role clarity.' },
+  { icon: 'scales', title: 'Ethics over shortcuts', text: 'Compliance, transparency and trust are non-negotiable. Shortcuts always cost more later.' },
+  { icon: 'hourglass-medium', title: 'Long-term thinking', text: 'We focus on durability: brand equity, systems and value that compound over time.' },
+];
+
+const framework = [
+  { title: 'Market and problem evaluation', text: 'We identify real customer problems, competitive gaps and scalable opportunities before execution begins.' },
+  { title: 'Process and system design', text: 'We build operating processes, compliance standards and reporting structure to control outcomes.' },
+  { title: 'Team building and alignment', text: 'We hire, train and align teams so that roles are clear and responsibility is owned.' },
+  { title: 'Controlled execution', text: 'We track performance with dashboards, audits and feedback loops, so growth stays measurable.' },
+  { title: 'Continuous improvement', text: 'We refine processes, strengthen compliance and improve quality, so the business compounds over time.' },
+];
+
+const expansion = [
+  { title: 'Controlled scaling', text: 'Growth happens only when execution quality can be protected.' },
+  { title: 'Systems before volume', text: 'Infrastructure, reporting, support and manpower come first.' },
+  { title: 'Brand consistency', text: 'Every business grows without compromising trust or service standards.' },
+];
+
+const more = [
+  { href: '/about/vision-mission-values/', title: 'Vision, mission and values', text: 'What the group is building toward, and the rules it will not break on the way.' },
+  { href: '/about/our-journey/', title: 'Our journey', text: 'From a healthcare-first foundation to seven sectors.' },
+  { href: '/about/governance/', title: 'Governance', text: 'How the Chairman’s Office keeps every company accountable.' },
+  { href: '/leadership/', title: 'Leadership', text: 'The people who set the standard.' },
+];
+---
+
+<Base
+  title="About Devriz Group"
+  description="Devriz Group is a diversified Indian business group built on a healthcare-first foundation, with companies across seven sectors run to one operating standard."
+  crumbs={crumbs}
+>
+  <PageHead
+    title="Building trusted Indian businesses with a healthcare-first foundation."
+    lede="Devriz Group is the parent of companies in healthcare, aesthetics, education, technology, infrastructure, consumer goods, agriculture and logistics. One focus runs through all of them: disciplined, system-driven growth."
+    crumbs={crumbs}
+    image={{ id: 'about-team', alt: 'A Devriz Group team in a review meeting' }}
+  />
+
+  <!-- Who we are -->
+  <section class="section">
+    <div class="wrap grid gap-x-16 gap-y-12 lg:grid-cols-12">
+      <div class="lg:col-span-7" data-reveal>
+        <h2 class="display-md">A structured business group built for long-term value, not short-term noise.</h2>
+        <div class="mt-8 grid max-w-[62ch] gap-5 text-[1.0625rem] leading-relaxed">
+          <p>
+            Devriz Group is a professionally managed, multi-sector organisation designed to build businesses that stand on fundamentals. Each company
+            operates with its own leadership and market focus, while following shared governance standards for quality, accountability and
+            compliance.
+          </p>
+          <p>
+            We do not build brands on borrowed credibility. We build repeatable systems: clear processes, measurable performance and people-first
+            leadership. That is what allows growth without compromising trust, execution discipline or brand integrity.
+          </p>
+        </div>
+      </div>
+      <ul class="self-start border-b border-line lg:col-span-5">
+        {
+          principles.map((p, i) => (
+            <li class="border-t border-line py-5" data-reveal style={`--i:${i}`}>
+              <h3 class="font-display text-lg font-semibold tracking-tight text-ink">{p.title}</h3>
+              <p class="mt-1 text-[0.9375rem] text-ink-2">{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Figures -->
+  <section class="border-y border-line bg-bg-2" aria-label="Devriz Group in numbers">
+    <dl class="wrap grid grid-cols-2 gap-y-10 py-14 lg:grid-cols-4 lg:py-20">
+      {
+        figures.map((f) => (
+          <div class="flex flex-col-reverse gap-3">
+            <dt class="meta">{f.label}</dt>
+            <dd class="figure text-5xl lg:text-6xl">{`${new Intl.NumberFormat('en-IN').format(f.value)}${f.suffix}`}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <!-- Philosophy -->
+  <section class="section">
+    <div class="wrap">
+      <div class="max-w-3xl" data-reveal>
+        <h2 class="display-lg">Strong businesses are built by design.</h2>
+        <p class="lede mt-5">Not by chance. Four ideas shape every decision the group makes.</p>
+      </div>
+      <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:grid-cols-12">
+        {
+          philosophy.map((p, i) => (
+            <li
+              class:list={[
+                'flex min-h-64 flex-col justify-between gap-10 border border-line p-7 lg:p-9',
+                i === 0 || i === 3 ? 'lg:col-span-7' : 'lg:col-span-5',
+                i === 0 ? 'bg-ink text-bg' : i === 3 ? 'bg-bg-2' : 'bg-surface',
+              ]}
+              data-reveal
+              style={`--i:${i}`}
+            >
+              <Icon name={p.icon} size={34} class={i === 0 ? 'text-accent' : 'text-accent-ink'} />
+              <div>
+                <h3 class:list={['display-sm', i === 0 && 'text-bg']}>{p.title}</h3>
+                <p class:list={['mt-3 max-w-[46ch]', i === 0 ? 'text-bg/80' : 'text-ink-2']}>{p.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Operating framework -->
+  <section class="section border-t border-line">
+    <div class="wrap">
+      <div class="max-w-3xl" data-reveal>
+        <h2 class="display-lg">How we build and scale a business.</h2>
+        <p class="lede mt-5">
+          A repeatable framework that reduces chaos and increases predictability. Instead of relying on individual heroics, we establish process
+          clarity, role ownership and measurement at every stage.
+        </p>
+      </div>
+      <ol class="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-5">
+        {
+          framework.map((step, i) => (
+            <li class="framework-step relative border-t-2 border-ink pt-6" data-reveal style={`--i:${i}`}>
+              <h3 class="font-display text-lg font-semibold leading-snug tracking-tight text-ink">{step.title}</h3>
+              <p class="mt-3 text-[0.9375rem] text-ink-2">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Presence -->
+  <section class="section border-t border-line bg-bg-2">
+    <div class="wrap grid items-start gap-x-16 gap-y-12 lg:grid-cols-12">
+      <div class="lg:col-span-6" data-reveal>
+        <Media id="about-head-office" alt="The Wave One tower in Sector 18, Noida, where the corporate office is located" ratio="4/3" />
+      </div>
+      <div class="lg:col-span-6" data-reveal style="--i:1">
+        <h2 class="display-md">{site.states.slice(0, -1).join(', ')} and {site.states.at(-1)}.</h2>
+        <p class="mt-6 max-w-[58ch] text-[1.0625rem] leading-relaxed">
+          The group operates across three states from its corporate office in Noida, with a strong operating concentration in Bihar and Delhi NCR.
+          Expansion is planned only where service quality, team readiness and support systems can be maintained.
+        </p>
+        <ul class="mt-8 border-b border-line">
+          {
+            expansion.map((e) => (
+              <li class="grid gap-1 border-t border-line py-4 sm:grid-cols-[14rem_1fr] sm:gap-6">
+                <span class="font-medium text-ink">{e.title}</span>
+                <span class="text-[0.9375rem] text-ink-2">{e.text}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <a href="/contact/#offices" class="link-arrow mt-8">
+          Office addresses
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Explore further -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="display-md" data-reveal>More about the group</h2>
+      <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          more.map((m, i) => (
+            <li data-reveal style={`--i:${i}`}>
+              <a href={m.href} class="group flex h-full min-h-52 flex-col justify-between gap-8 border border-line bg-surface p-6 transition-colors hover:border-ink">
+                <span>
+                  <span class="block font-display text-xl font-semibold tracking-tight text-ink">{m.title}</span>
+                  <span class="mt-2 block text-[0.9375rem] text-ink-2">{m.text}</span>
+                </span>
+                <Icon name="arrow-right" size={20} class="text-ink transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  /* A small square on the rule marks each stage of the sequence. */
+  .framework-step::before {
+    background: var(--accent);
+    content: '';
+    height: 0.625rem;
+    left: 0;
+    position: absolute;
+    top: -0.375rem;
+    width: 0.625rem;
+  }
+</style>

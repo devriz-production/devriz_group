@@ -1,0 +1,106 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import Media from '../components/Media.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { chairman, leaders, chairmansOffice } from '../data/people';
+import { site } from '../data/site';
+
+const crumbs = [{ label: 'Leadership' }];
+
+const schema = [chairman, ...leaders].map((p) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: p.name,
+  jobTitle: p.role,
+  worksFor: { '@type': 'Organization', name: p.org },
+  url: `${site.url}/leadership/#${p.slug}`,
+}));
+---
+
+<Base
+  title="Leadership"
+  description="The leadership of Devriz Group: Chairman Krishna Kumar Singh and the people who set the standard for governance and execution across the group."
+  crumbs={crumbs}
+  schema={schema}
+>
+  <PageHead
+    title="Guided by experience. Driven by discipline."
+    lede="The people who set the standard for governance, execution and long-term value across every Devriz business."
+    crumbs={crumbs}
+  />
+
+  <!-- Chairman -->
+  <section class="section" id={chairman.slug}>
+    <div class="wrap grid items-center gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-5" data-reveal>
+        <Media id={chairman.image} alt={`${chairman.name}, ${chairman.role} of ${chairman.org}`} ratio="4/5" sizes="(min-width: 1024px) 40vw, 100vw" position="50% 20%" priority />
+      </div>
+      <div class="lg:col-span-7" data-reveal style="--i:1">
+        <p class="eyebrow">{chairman.role}, {chairman.org}</p>
+        <h2 class="display-lg mt-5">{chairman.name}</h2>
+        <blockquote class="mt-8 border-l-2 border-accent pl-6 font-display text-2xl font-medium leading-snug tracking-tight text-ink lg:text-[1.75rem]">
+          “{chairman.quote}”
+        </blockquote>
+        <p class="mt-7 max-w-[58ch] text-[1.0625rem] leading-relaxed">{chairman.bio}</p>
+        <a href="/chairman-krishna-kumar-singh/" class="btn btn-ink mt-9">
+          Chairman’s profile and message
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap">
+      <h2 class="display-lg" data-reveal>Group leadership</h2>
+      <ul class="mt-12 grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
+        {
+          leaders.map((p, i) => (
+            <li id={p.slug} class="flex flex-col" data-reveal style={`--i:${i}`}>
+              <Media id={p.image} alt={`${p.honorific} ${p.name}`} ratio="4/5" sizes="(min-width: 1024px) 22vw, (min-width: 640px) 46vw, 100vw" position="50% 15%" />
+              <h3 class="display-sm mt-6">{`${p.honorific} ${p.name}`}</h3>
+              <p class="mt-1 text-[0.9375rem] font-medium text-ink">
+                {p.role}, {p.org}
+              </p>
+              {p.note && <p class="mt-1 text-sm text-ink-3">{p.note}</p>}
+              <blockquote class="mt-5 border-l-2 border-accent pl-4 text-[0.9375rem] leading-relaxed text-ink-2">“{p.quote}”</blockquote>
+              <p class="mt-4 text-[0.9375rem] leading-relaxed text-ink-3">{p.bio}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Chairman's Office -->
+  <section class="section">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="self-start lg:sticky lg:top-28 lg:col-span-5" data-reveal>
+        <h2 class="display-md">Clarity at the top. Ownership at every level.</h2>
+        <p class="mt-5 max-w-[46ch] text-ink-2">
+          The Chairman’s Office provides strategic oversight. It does not run the companies. Each business is led by its own team and reviewed
+          against measurable outcomes.
+        </p>
+        <a href="/about/governance/" class="link-arrow mt-7">
+          How the group is governed
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+      <ul class="border-b border-line lg:col-span-6 lg:col-start-7">
+        {
+          chairmansOffice.slice(0, 5).map((f, i) => (
+            <li class="border-t border-line py-5" data-reveal style={`--i:${i}`}>
+              <h3 class="font-display text-lg font-semibold tracking-tight text-ink">{f.title}</h3>
+              <p class="mt-1 text-[0.9375rem] text-ink-2">{f.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand heading="Join the team behind the group." text="We hire across healthcare, technology, operations, marketing and corporate functions." label="Explore careers" href="/careers/" />
+</Base>

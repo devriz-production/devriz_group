@@ -1,0 +1,128 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import { news, coverage, categories } from '../../data/news';
+import { formatDate, site } from '../../data/site';
+import { findImage } from '../../lib/images';
+
+const crumbs = [{ label: 'Newsroom' }];
+const label = (id: string) => categories.find((c) => c.id === id)!.label;
+const outlets = coverage.map((c) => ({ ...c, image: findImage(c.logo) }));
+const sorted = [...news].sort((a, b) => b.date.localeCompare(a.date));
+---
+
+<Base
+  title="Newsroom"
+  description="News from Devriz Group: press releases, group updates and media coverage, with contact details for journalists."
+  crumbs={crumbs}
+>
+  <PageHead title="Newsroom" lede="Press releases, group updates and coverage of Devriz Group in the media." crumbs={crumbs} narrow>
+    <a href="/contact/?enquiry=media" class="btn btn-ink">Media enquiries</a>
+    <a href="/newsroom/newsletter/" class="btn btn-outline">Newsletter</a>
+    <a href="/brand-assets/" class="btn btn-outline">Brand assets</a>
+  </PageHead>
+
+  <div data-filter="category" data-noun="item">
+    <section class="section">
+      <div class="wrap">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div class="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:px-0" role="group" aria-label="Filter by type">
+            <button type="button" class="chip" data-filter-value="" aria-pressed="true">Everything</button>
+            {
+              categories.map((c) => (
+                <button type="button" class="chip" data-filter-value={c.id} aria-pressed="false">
+                  {c.label}
+                </button>
+              ))
+            }
+          </div>
+          <p class="meta" aria-live="polite" data-filter-count>{`${sorted.length + outlets.length} items`}</p>
+        </div>
+
+        <div data-filter-group>
+          <ul class="mt-10 border-b border-line">
+            {
+              sorted.map((item) => (
+                <li class="border-t border-line" data-filter-item data-tags={item.category}>
+                  <a href={`/newsroom/${item.slug}/`} class="group grid gap-x-10 gap-y-3 py-8 lg:grid-cols-12 lg:py-10">
+                    <p class="meta lg:col-span-3">
+                      <time datetime={item.date}>{formatDate(item.date)}</time>
+                      <span class="mt-1 block text-accent-ink">{label(item.category)}</span>
+                    </p>
+                    <div class="lg:col-span-8">
+                      <h2 class="display-md transition-colors group-hover:text-accent-ink">{item.title}</h2>
+                      <p class="mt-3 max-w-[62ch] text-ink-2">{item.summary}</p>
+                    </div>
+                    <Icon name="arrow-right" size={24} class="hidden justify-self-end text-ink transition-transform duration-300 group-hover:translate-x-1 lg:col-span-1 lg:block" />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section border-y border-line bg-bg-2" data-filter-group>
+      <div class="wrap">
+        <div class="max-w-3xl">
+          <h2 class="display-lg">Media coverage</h2>
+          <p class="lede mt-5">Outlets that carried the group’s December 2025 announcement. Each link opens the article on the publisher’s site.</p>
+        </div>
+        <ul class="mt-12 grid grid-cols-2 gap-px border border-line-2 bg-line-2 sm:grid-cols-3 lg:grid-cols-4">
+          {
+            outlets.map((o) => (
+              <li class="bg-bg-2" data-filter-item data-tags="media-coverage">
+                <a href={o.href} target="_blank" rel="noopener noreferrer" class="group flex h-full min-h-36 flex-col justify-between gap-6 p-5 transition-colors hover:bg-surface lg:p-6">
+                  {o.image ? <Image src={o.image} alt="" height={72} class="press-logo h-8 w-auto self-start" loading="lazy" /> : <span />}
+                  <span class="flex items-center justify-between gap-3 text-[0.9375rem] font-medium text-ink">
+                    {o.outlet}
+                    <Icon name="arrow-up-right" size={16} class="shrink-0 text-ink-3 transition-colors group-hover:text-ink" />
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <div class="wrap py-16" data-filter-empty hidden>
+      <p class="display-sm font-display font-semibold text-ink">Nothing under that filter yet.</p>
+      <button type="button" class="btn btn-outline mt-6" data-filter-reset>Show everything</button>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-5" data-reveal>
+        <h2 class="display-md">For journalists</h2>
+        <p class="mt-5 max-w-[46ch] text-ink-2">
+          For interviews, statements, facts about the group or high-resolution images, write to the corporate office. Please include your
+          publication and deadline.
+        </p>
+      </div>
+      <dl class="self-start border-b border-line lg:col-span-6 lg:col-start-7" data-reveal style="--i:1">
+        <div class="grid gap-1 border-t border-line py-5 sm:grid-cols-[10rem_1fr]">
+          <dt class="meta pt-1">Email</dt>
+          <dd><a href={`mailto:${site.email}?subject=Media%20enquiry`} class="link-underline font-medium text-ink">{site.email}</a></dd>
+        </div>
+        <div class="grid gap-1 border-t border-line py-5 sm:grid-cols-[10rem_1fr]">
+          <dt class="meta pt-1">Phone</dt>
+          <dd><a href={site.phoneHref} class="link-underline font-medium text-ink">{site.phone}</a></dd>
+        </div>
+        <div class="grid gap-1 border-t border-line py-5 sm:grid-cols-[10rem_1fr]">
+          <dt class="meta pt-1">Logos and facts</dt>
+          <dd><a href="/brand-assets/" class="link-underline font-medium text-ink">Brand assets and boilerplate</a></dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+</Base>
+
+<script>
+  import '../../scripts/filter.ts';
+</script>

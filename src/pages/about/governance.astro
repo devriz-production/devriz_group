@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { chairmansOffice, governancePrinciples } from '../../data/people';
+import { nestedPolicies } from '../../lib/policies';
+
+const crumbs = [{ label: 'About', href: '/about/' }, { label: 'Governance' }];
+
+const partnerClarity = [
+  { title: 'Governance and reporting', text: 'Monthly performance snapshots with a quarterly review structure, for decision-grade clarity.' },
+  { title: 'Use of funds', text: 'A clear allocation roadmap across growth, operations, product and technology.' },
+  { title: 'Risk controls', text: 'A compliance-first approach with process-driven execution and accountability across departments.' },
+  { title: 'Growth levers', text: 'Distribution expansion and the combined strength of services and products.' },
+];
+---
+
+<Base
+  title="Governance"
+  description="How Devriz Group is governed: the role of the Chairman's Office, the principles every company answers to, and the policies that back them."
+  crumbs={crumbs}
+>
+  <PageHead
+    title="Governance is the operating standard."
+    lede="It is not paperwork. It protects trust, improves decisions and keeps every business accountable at scale."
+    crumbs={crumbs}
+    image={{ id: 'governance-boardroom', alt: 'A boardroom table set for a review meeting' }}
+  />
+
+  <!-- Chairman's Office -->
+  <section class="section">
+    <div class="wrap">
+      <div class="max-w-3xl" data-reveal>
+        <h2 class="display-lg">What the Chairman’s Office does</h2>
+        <p class="lede mt-5">
+          It is a strategic oversight body, not an operational unit. It keeps every group company aligned on vision, governance and execution
+          discipline, and leaves the running of each business to its own leadership.
+        </p>
+      </div>
+      <ul class="mt-12 grid gap-px border border-line bg-line sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+        {
+          chairmansOffice.map((f, i) => (
+            <li class="bg-bg p-7 lg:p-9" data-reveal="fade" style={`--i:${i}`}>
+              <h3 class="display-sm">{f.title}</h3>
+              <p class="mt-3 text-ink-2">{f.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap grid gap-x-16 gap-y-12 lg:grid-cols-12">
+      <div class="self-start lg:sticky lg:top-28 lg:col-span-5" data-reveal>
+        <blockquote class="display-md font-display font-semibold text-ink">“Discipline creates freedom. Governance creates trust.”</blockquote>
+        <p class="mt-6 max-w-[46ch] text-ink-2">
+          Strong governance enables speed, not bureaucracy. When standards are clear, teams move faster, with fewer mistakes and better decisions.
+        </p>
+      </div>
+      <dl class="border-b border-line-2 lg:col-span-6 lg:col-start-7">
+        {
+          governancePrinciples.map((p, i) => (
+            <div class="grid gap-1 border-t border-line-2 py-6 sm:grid-cols-[13rem_1fr] sm:gap-6" data-reveal style={`--i:${i}`}>
+              <dt class="font-display text-lg font-semibold tracking-tight text-ink">{p.title}</dt>
+              <dd class="text-ink-2">{p.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- Partners -->
+  <section class="section" id="partners">
+    <div class="wrap">
+      <div class="max-w-3xl" data-reveal>
+        <h2 class="display-lg">For investors and strategic partners</h2>
+        <p class="lede mt-5">
+          We work with long-term partners who care about how a business is run as much as how fast it grows. This is what they can expect to see
+          clearly.
+        </p>
+      </div>
+      <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
+        {
+          partnerClarity.map((c, i) => (
+            <li class="border-t-2 border-ink pt-6" data-reveal style={`--i:${i}`}>
+              <h3 class="font-display text-lg font-semibold tracking-tight text-ink">{c.title}</h3>
+              <p class="mt-3 text-[0.9375rem] text-ink-2">{c.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Policies -->
+  <section class="section border-t border-line">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-4" data-reveal>
+        <h2 class="display-md">The policies behind it</h2>
+        <a href="/policies/" class="link-arrow mt-6">
+          All corporate policies
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+      <ul class="border-b border-line lg:col-span-8">
+        {
+          nestedPolicies.map((p) => (
+            <li class="border-t border-line">
+              <a href={p.href} class="group flex items-center justify-between gap-6 py-6">
+                <span>
+                  <span class="display-sm block font-display font-semibold text-ink">{p.title}</span>
+                  <span class="mt-1 block max-w-[60ch] text-[0.9375rem] text-ink-3">{p.description}</span>
+                </span>
+                <Icon name="arrow-right" size={20} class="shrink-0 text-ink transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand heading="Considering a partnership?" text="Tell us about your organisation and what you have in mind. Partnership enquiries go to the corporate office." href="/contact/?enquiry=partnership" />
+</Base>

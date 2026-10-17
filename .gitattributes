@@ -1,0 +1,8 @@
+﻿# Keep one line-ending style in the repository, whatever machine edits it.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.woff2 binary
+*.pdf binary

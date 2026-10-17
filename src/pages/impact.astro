@@ -1,0 +1,150 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import Media from '../components/Media.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { hasImage } from '../lib/images';
+
+const crumbs = [{ label: 'Impact' }];
+
+const categories = [
+  { id: 'community', label: 'Community initiatives' },
+  { id: 'animal-welfare', label: 'Animal welfare' },
+  { id: 'skilling', label: 'Skilling and employment' },
+];
+
+const initiatives = [
+  {
+    category: 'community',
+    name: 'Environment & Human Welfare Trust',
+    kind: 'Charitable trust',
+    text: 'The trust through which the group takes part in social and community-focused programmes. It carries the group’s commitment to environmental awareness and human welfare beyond its commercial work.',
+    image: 'impact-community',
+    alt: 'Volunteers and residents planting saplings along a village road',
+  },
+  {
+    category: 'animal-welfare',
+    name: 'Nandani Gaushala',
+    kind: 'Gaushala',
+    text: 'A gaushala run for the protection and care of cattle, with a focus on operating sustainably so that care can continue year after year.',
+    image: 'impact-gaushala-nandani',
+    alt: 'Cattle in care at Nandani Gaushala',
+  },
+  {
+    category: 'animal-welfare',
+    name: 'Pehlagarh Gaushala',
+    kind: 'Gaushala',
+    text: 'A second gaushala supported by the group, dedicated to cattle welfare and care.',
+    image: 'impact-gaushala-pehlagarh',
+    alt: 'Cattle in care at Pehlagarh Gaushala',
+  },
+  {
+    category: 'skilling',
+    name: 'Kotil Aesthetic Academy',
+    kind: 'Education',
+    text: 'Professional training in aesthetic sciences, built on practical exposure and certification pathways. It addresses a real shortage of skilled aesthetic professionals and gives students a route into work.',
+    image: 'impact-skilling',
+    alt: 'A student practising a skin analysis technique under an instructor',
+    link: { href: '/companies/kotil-aesthetic-academy/', label: 'About the academy' },
+  },
+  {
+    category: 'skilling',
+    name: 'First jobs and on-the-job learning',
+    kind: 'Employment',
+    text: 'Group companies hire freshers into sales, support, operations and coordination roles, and train them in practical business skills. People who perform consistently move into roles with more responsibility.',
+    link: { href: '/careers/', label: 'Careers at Devriz' },
+  },
+];
+
+const principles = [
+  { title: 'Part of the plan', text: 'Ethical conduct, environmental awareness and community initiatives are built into long-term planning, not added afterwards.' },
+  { title: 'Run with the same discipline', text: 'Welfare work is held to the standards the group applies everywhere else: clear responsibility and honest reporting.' },
+  { title: 'For the long term', text: 'We commit to institutions that need care every day, for years. That is why the work is done through trusts and an academy.' },
+];
+---
+
+<Base
+  title="Impact"
+  description="How Devriz Group gives back: community programmes through the Environment & Human Welfare Trust, two gaushalas for cattle welfare, and skilling through its academy."
+  crumbs={crumbs}
+>
+  <PageHead
+    title="Growth that gives back."
+    lede="Devriz Group recognises a responsibility beyond its businesses: toward community, animals and the people it trains and employs."
+    crumbs={crumbs}
+    image={{ id: 'impact-hero', alt: 'A caretaker feeding cattle at a gaushala in morning light' }}
+  />
+
+  <section class="section" data-filter="category" data-noun="initiative">
+    <div class="wrap">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <h2 class="display-lg">What the group supports</h2>
+        <p class="meta" aria-live="polite" data-filter-count>{`${initiatives.length} initiatives`}</p>
+      </div>
+      <div class="no-scrollbar -mx-5 mt-8 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:px-0" role="group" aria-label="Filter by area">
+        <button type="button" class="chip" data-filter-value="" aria-pressed="true">All areas</button>
+        {
+          categories.map((c) => (
+            <button type="button" class="chip" data-filter-value={c.id} aria-pressed="false">
+              {c.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <ul class="mt-12 border-b border-line">
+        {
+          initiatives.map((item) => (
+            <li class="grid gap-x-16 gap-y-6 border-t border-line py-10 lg:grid-cols-12 lg:py-14" data-filter-item data-tags={item.category}>
+              <div class="lg:col-span-7">
+                <p class="meta">{`${categories.find((c) => c.id === item.category)!.label} / ${item.kind}`}</p>
+                <h3 class="display-md mt-4">{item.name}</h3>
+                <p class="mt-4 max-w-[58ch] text-[1.0625rem] leading-relaxed text-ink-2">{item.text}</p>
+                {
+                  item.link && (
+                    <a href={item.link.href} class="link-arrow mt-6">
+                      {item.link.label}
+                      <Icon name="arrow-right" size={18} />
+                    </a>
+                  )
+                }
+              </div>
+              {
+                item.image && hasImage(item.image) && (
+                  <div class="lg:col-span-5">
+                    <Media id={item.image} alt={item.alt!} ratio="4/3" sizes="(min-width: 1024px) 40vw, 100vw" />
+                  </div>
+                )
+              }
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap">
+      <div class="max-w-3xl" data-reveal>
+        <h2 class="display-lg">Responsible businesses build stronger brands.</h2>
+      </div>
+      <ul class="mt-12 grid gap-x-10 gap-y-10 lg:mt-16 lg:grid-cols-3">
+        {
+          principles.map((p, i) => (
+            <li class="border-t-2 border-ink pt-6" data-reveal style={`--i:${i}`}>
+              <h3 class="display-sm">{p.title}</h3>
+              <p class="mt-3 max-w-[42ch] text-ink-2">{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand heading="Working on something similar?" text="If your organisation works in community welfare, animal care or skilling in Delhi, Uttar Pradesh or Bihar, we would like to hear from you." href="/contact/?enquiry=partnership" />
+</Base>
+
+<script>
+  import '../scripts/filter.ts';
+</script>

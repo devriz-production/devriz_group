@@ -1,0 +1,31 @@
+---
+// Closing prompt used at the foot of most pages. One label per intent site-wide.
+import Icon from './Icon.astro';
+
+interface Props {
+  heading?: string;
+  text?: string;
+  label?: string;
+  href?: string;
+}
+
+const {
+  heading = 'Talk to the group.',
+  text = 'Partnership, vendor, media and general enquiries all reach the corporate office in Noida.',
+  label = 'Contact us',
+  href = '/contact/',
+} = Astro.props;
+---
+
+<section class="border-t border-line">
+  <div class="wrap flex flex-col gap-8 py-16 lg:flex-row lg:items-end lg:justify-between lg:py-24" data-reveal>
+    <div class="max-w-2xl">
+      <h2 class="display-md">{heading}</h2>
+      <p class="lede mt-4">{text}</p>
+    </div>
+    <a href={href} class="btn btn-primary shrink-0 self-start lg:self-auto">
+      {label}
+      <Icon name="arrow-right" size={18} />
+    </a>
+  </div>
+</section>

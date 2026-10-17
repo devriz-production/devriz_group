@@ -1,0 +1,371 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import Media from '../../components/Media.astro';
+import Faq from '../../components/Faq.astro';
+import ApplyForm from '../../components/ApplyForm.astro';
+import { roles, departments, whyJoin, verticals, hiringProcess, whoShouldApply, careersFaq } from '../../data/careers';
+import { faqSchema } from '../../data/faqs';
+
+const crumbs = [{ label: 'Careers' }];
+const tag = (d: string) => d.toLowerCase().replace(/[^a-z]+/g, '-');
+---
+
+<Base
+  title="Careers"
+  description="Careers at Devriz Group: open roles across healthcare, technology, marketing, operations and corporate functions in Noida and Delhi NCR."
+  crumbs={crumbs}
+  schema={faqSchema(careersFaq)}
+>
+  <PageHead
+    title="Build your career with a multi-sector group."
+    lede="Devriz Group hires execution-focused people across healthcare, aesthetics, education, technology, logistics, construction, trading and corporate functions."
+    crumbs={crumbs}
+    image={{ id: 'careers-hero', alt: 'Colleagues at work in a Devriz Group office' }}
+  >
+    <a href="#openings" class="btn btn-primary">
+      View open roles
+      <Icon name="arrow-down" size={18} />
+    </a>
+    <a href="/careers/recruitment-fraud-alert/" class="btn btn-outline">Recruitment fraud alert</a>
+  </PageHead>
+
+  <!-- Why join -->
+  <section class="section" id="life">
+    <div class="wrap">
+      <div class="max-w-3xl" data-reveal>
+        <h2 class="display-lg">A culture for people who want real responsibility.</h2>
+        <p class="lede mt-5">We look for people who take ownership, follow reporting systems, learn fast and deliver measurable output.</p>
+      </div>
+      <div class="mt-12 grid gap-x-16 gap-y-12 lg:mt-16 lg:grid-cols-12">
+        <ul class="grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:col-span-8">
+          {
+            whyJoin.map((w, i) => (
+              <li class="border-t-2 border-ink pt-5" data-reveal style={`--i:${i % 2}`}>
+                <h3 class="display-sm">{w.title}</h3>
+                <p class="mt-2 text-ink-2">{w.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="lg:col-span-4" data-reveal>
+          <Media id="careers-life" alt="Two colleagues talking as they walk through the office" ratio="4/5" sizes="(min-width: 1024px) 30vw, 100vw" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Where you could work -->
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="self-start lg:sticky lg:top-28 lg:col-span-4" data-reveal>
+        <h2 class="display-md">Where you could work</h2>
+        <p class="mt-5 max-w-[40ch] text-ink-2">
+          Candidates may be placed in one or more group businesses, depending on skill, experience and what the business needs.
+        </p>
+      </div>
+      <dl class="grid gap-x-10 sm:grid-cols-2 lg:col-span-8">
+        {
+          verticals.map((v) => (
+            <div class="border-t border-line-2 py-5">
+              <dt class="font-display text-lg font-semibold tracking-tight text-ink">{v.title}</dt>
+              <dd class="mt-1 text-[0.9375rem] text-ink-2">{v.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- Openings -->
+  <section class="section" id="openings" data-filter="department" data-noun="profile">
+    <div class="wrap">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div class="max-w-3xl">
+          <h2 class="display-lg">Current openings</h2>
+          <p class="lede mt-5">
+            These are the profiles the group hires for regularly. The exact role, company, salary and location are confirmed during screening.
+          </p>
+        </div>
+        <p class="meta shrink-0" aria-live="polite" data-filter-count>{`${roles.length} profiles`}</p>
+      </div>
+
+      <div class="no-scrollbar -mx-5 mt-8 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:px-0" role="group" aria-label="Filter by department" data-role-chips>
+        <button type="button" class="chip" data-filter-value="" aria-pressed="true">All departments</button>
+        {
+          departments.map((d) => (
+            <button type="button" class="chip" data-filter-value={tag(d)} aria-pressed="false">
+              {d}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="mt-10 border-b border-line" data-role-list>
+        {
+          roles.map((r) => (
+            <details class="group border-t border-line" data-filter-item data-tags={tag(r.department)}>
+              <summary class="grid items-center gap-x-8 gap-y-2 py-6 lg:grid-cols-12">
+                <span class="display-sm font-display font-semibold text-ink lg:col-span-5">{r.title}</span>
+                <span class="meta lg:col-span-2">{r.department}</span>
+                <span class="text-[0.9375rem] text-ink-3 lg:col-span-4">{[r.type, r.experience, r.location].filter(Boolean).join(', ')}</span>
+                <span class="hidden size-9 place-items-center justify-self-end border border-line-2 text-ink transition-transform duration-300 group-open:rotate-45 lg:col-span-1 lg:grid">
+                  <Icon name="plus" size={16} />
+                </span>
+              </summary>
+              <div class="grid gap-x-16 gap-y-6 pb-9 lg:grid-cols-12">
+                <div class="lg:col-span-7">
+                  <p class="text-[1.0625rem] text-ink-2">{r.summary}</p>
+                  <ul class="mt-5 grid gap-2.5">
+                    {r.points.map((p) => (
+                      <li class="flex items-start gap-3 text-ink-2">
+                        <Icon name="check" size={18} class="mt-1 shrink-0 text-accent-ink" />
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="lg:col-span-5">
+                  {r.fit && (
+                    <>
+                      <p class="meta">Requirements</p>
+                      <p class="mt-2 text-ink-2">{r.fit}</p>
+                    </>
+                  )}
+                  <a href="#apply" class="btn btn-ink btn-sm mt-6" data-apply-title={r.title}>
+                    Apply for this role
+                    <Icon name="arrow-right" size={16} />
+                  </a>
+                </div>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+
+      <div class="mt-10 border border-line bg-surface p-10 text-center" data-filter-empty hidden>
+        <p class="display-sm font-display font-semibold text-ink">No profiles in that department right now.</p>
+        <button type="button" class="btn btn-outline mt-6" data-filter-reset>Show all departments</button>
+      </div>
+
+      <div class="mt-10 border border-line bg-surface p-10 text-center" data-roles-none hidden>
+        <p class="display-sm font-display font-semibold text-ink">No openings are listed right now.</p>
+        <p class="mx-auto mt-2 max-w-[52ch] text-ink-2">You can still send a general application below. We keep it on file and contact you when a suitable role opens.</p>
+      </div>
+
+      <template data-role-template>
+        <details class="group border-t border-line" data-filter-item>
+          <summary class="grid items-center gap-x-8 gap-y-2 py-6 lg:grid-cols-12">
+            <span class="display-sm font-display font-semibold text-ink lg:col-span-5" data-r="title"></span>
+            <span class="meta lg:col-span-2" data-r="department"></span>
+            <span class="text-[0.9375rem] text-ink-3 lg:col-span-4" data-r="meta"></span>
+            <span class="hidden size-9 place-items-center justify-self-end border border-line-2 text-ink transition-transform duration-300 group-open:rotate-45 lg:col-span-1 lg:grid">
+              <Icon name="plus" size={16} />
+            </span>
+          </summary>
+          <div class="grid gap-x-16 gap-y-6 pb-9 lg:grid-cols-12">
+            <div class="lg:col-span-7">
+              <p class="text-[1.0625rem] text-ink-2" data-r="summary"></p>
+              <ul class="mt-5 grid gap-2.5" data-r="points"></ul>
+            </div>
+            <div class="lg:col-span-5">
+              <div data-r="fit-block">
+                <p class="meta">Requirements</p>
+                <p class="mt-2 text-ink-2" data-r="fit"></p>
+              </div>
+              <a href="#apply" class="btn btn-ink btn-sm mt-6" data-apply-title>
+                Apply for this role
+                <Icon name="arrow-right" size={16} />
+              </a>
+            </div>
+          </div>
+        </details>
+      </template>
+      <template data-role-point>
+        <li class="flex items-start gap-3 text-ink-2">
+          <Icon name="check" size={18} class="mt-1 shrink-0 text-accent-ink" />
+          <span></span>
+        </li>
+      </template>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="section border-y border-line bg-bg-2" id="process">
+    <div class="wrap">
+      <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
+        <div class="lg:col-span-7" data-reveal>
+          <h2 class="display-lg">How we hire</h2>
+          <p class="lede mt-5">Four steps, with a clear answer at the end of each.</p>
+        </div>
+      </div>
+      <ol class="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
+        {
+          hiringProcess.map((step, i) => (
+            <li class="process-step relative border-t-2 border-ink pt-6" data-reveal style={`--i:${i}`}>
+              <h3 class="display-sm">{step.title}</h3>
+              <p class="mt-3 text-ink-2">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="mt-14 flex flex-col items-start gap-5 border border-line-2 bg-surface p-6 sm:flex-row sm:items-center lg:p-8" data-reveal>
+        <Icon name="shield-warning" size={36} class="shrink-0 text-accent-ink" />
+        <p class="flex-1 text-ink">
+          <strong class="font-semibold">Devriz Group never asks candidates for money.</strong>
+          <span class="text-ink-2"> No registration fee, deposit, training charge or equipment cost, at any stage.</span>
+        </p>
+        <a href="/careers/recruitment-fraud-alert/" class="link-arrow shrink-0">
+          How to spot a fake offer
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Apply -->
+  <section class="section" id="apply">
+    <div class="wrap grid gap-x-16 gap-y-12 lg:grid-cols-12">
+      <div class="self-start lg:sticky lg:top-28 lg:col-span-4">
+        <h2 class="display-lg">Apply</h2>
+        <p class="mt-5 max-w-[40ch] text-ink-2">Fill in the details properly. Clear, specific applications are the ones that get shortlisted.</p>
+        <h3 class="meta mt-10">Who should apply</h3>
+        <ul class="mt-4 grid gap-3">
+          {
+            whoShouldApply.map((w) => (
+              <li class="flex items-start gap-3 text-[0.9375rem] text-ink-2">
+                <Icon name="check" size={18} class="mt-0.5 shrink-0 text-accent-ink" />
+                {w}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="lg:col-span-8">
+        <ApplyForm />
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section border-t border-line">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-4" data-reveal>
+        <h2 class="display-md">Questions candidates ask</h2>
+      </div>
+      <div class="lg:col-span-8" data-reveal style="--i:1">
+        <Faq items={careersFaq} />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .process-step::before {
+    background: var(--accent);
+    content: '';
+    height: 0.625rem;
+    left: 0;
+    position: absolute;
+    top: -0.375rem;
+    width: 0.625rem;
+  }
+</style>
+
+<script>
+  // Openings are managed in the admin panel. When its feed answers, the list,
+  // the department filters and the "Applying for" menu are rebuilt from it.
+  // With no feed (the local preview), the list built into the page stays.
+  type Job = { title: string; department: string; type: string; experience: string; location: string; summary: string; points: string[]; fit: string };
+
+  const tag = (text: string) => text.toLowerCase().replace(/[^a-z]+/g, '-');
+  const list = document.querySelector<HTMLElement>('[data-role-list]')!;
+
+  async function loadJobs(): Promise<Job[] | null> {
+    try {
+      const response = await fetch('/api/jobs.php', { headers: { Accept: 'application/json' } });
+      if (!response.ok || !(response.headers.get('content-type') ?? '').includes('application/json')) return null;
+      const data = await response.json();
+      return data.ok && Array.isArray(data.jobs) ? data.jobs : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function render(jobs: Job[]) {
+    const rowTemplate = document.querySelector<HTMLTemplateElement>('[data-role-template]')!;
+    const pointTemplate = document.querySelector<HTMLTemplateElement>('[data-role-point]')!;
+    const set = (row: ParentNode, key: string, text: string) => {
+      row.querySelector<HTMLElement>(`[data-r="${key}"]`)!.textContent = text;
+    };
+
+    list.replaceChildren(
+      ...jobs.map((job) => {
+        const row = rowTemplate.content.cloneNode(true) as DocumentFragment;
+        row.querySelector<HTMLElement>('details')!.dataset.tags = tag(job.department);
+        set(row, 'title', job.title);
+        set(row, 'department', job.department);
+        set(row, 'meta', [job.type, job.experience, job.location].filter(Boolean).join(', '));
+        set(row, 'summary', job.summary);
+        const points = row.querySelector<HTMLElement>('[data-r="points"]')!;
+        for (const point of job.points ?? []) {
+          const item = pointTemplate.content.cloneNode(true) as DocumentFragment;
+          item.querySelector('span')!.textContent = point;
+          points.append(item);
+        }
+        if (job.fit) set(row, 'fit', job.fit);
+        else row.querySelector<HTMLElement>('[data-r="fit-block"]')!.remove();
+        row.querySelector<HTMLElement>('[data-apply-title]')!.dataset.applyTitle = job.title;
+        return row;
+      }),
+    );
+
+    const chips = document.querySelector<HTMLElement>('[data-role-chips]')!;
+    const all = chips.querySelector<HTMLElement>('[data-filter-value=""]')!;
+    chips.replaceChildren(
+      all,
+      ...[...new Set(jobs.map((j) => j.department))].map((department) => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'chip';
+        chip.dataset.filterValue = tag(department);
+        chip.setAttribute('aria-pressed', 'false');
+        chip.textContent = department;
+        return chip;
+      }),
+    );
+
+    const select = document.querySelector<HTMLSelectElement>('select[name="role"]');
+    if (select) {
+      const titles = [...new Set(jobs.map((j) => j.title)), 'Other profile'];
+      select.replaceChildren(new Option('Select a profile', ''), ...titles.map((title) => new Option(title, title)));
+    }
+
+    if (jobs.length === 0) {
+      chips.hidden = true;
+      list.hidden = true;
+      document.querySelector('#openings [data-filter-empty]')?.remove();
+      document.querySelector('#openings [data-filter-count]')?.remove();
+      document.querySelector<HTMLElement>('[data-roles-none]')!.hidden = false;
+    }
+  }
+
+  // "Apply for this role" fills in the form instead of making the visitor choose again.
+  list.addEventListener('click', (event) => {
+    const link = (event.target as HTMLElement).closest<HTMLElement>('[data-apply-title]');
+    const select = document.querySelector<HTMLSelectElement>('select[name="role"]');
+    if (!link || !select) return;
+    const option = [...select.options].find((o) => o.value === link.dataset.applyTitle);
+    if (option) select.value = option.value;
+    event.preventDefault();
+    document.getElementById('apply')?.scrollIntoView();
+    document.querySelector<HTMLInputElement>('#a-name')?.focus({ preventScroll: true });
+  });
+
+  (async () => {
+    const jobs = await loadJobs();
+    if (jobs) render(jobs);
+    await import('../../scripts/filter.ts');
+  })();
+</script>

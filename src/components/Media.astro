@@ -1,0 +1,66 @@
+---
+// A photograph, or a labelled placeholder when the file has not been supplied yet.
+// `id` is the file name (no extension) under src/assets. `fallback` ids are tried in order.
+import { Image } from 'astro:assets';
+import { findImage } from '../lib/images';
+import { getSlot } from '../data/slots';
+
+interface Props {
+  id: string;
+  alt: string;
+  fallback?: string | string[];
+  ratio?: string;
+  sizes?: string;
+  priority?: boolean;
+  class?: string;
+  imgClass?: string;
+  position?: string;
+  fill?: boolean;
+}
+
+const {
+  id,
+  alt,
+  fallback,
+  ratio,
+  sizes = '(min-width: 1024px) 50vw, 100vw',
+  priority = false,
+  class: cls = '',
+  imgClass = '',
+  position = 'center',
+  fill = false,
+} = Astro.props;
+
+const fallbacks = fallback ? (Array.isArray(fallback) ? fallback : [fallback]) : [];
+const image = findImage(id, ...fallbacks);
+const slot = getSlot(id);
+const widths = image ? [...new Set([480, 800, 1200, 1600, 2000, 2400, image.width].filter((w) => w <= image.width))] : [];
+---
+
+<div class:list={[fill ? 'absolute inset-0' : 'relative', 'overflow-hidden bg-bg-2', cls]} style={ratio ? `aspect-ratio:${ratio}` : undefined}>
+  {
+    image ? (
+      <Image
+        src={image}
+        alt={alt}
+        widths={widths}
+        sizes={sizes}
+        quality={78}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        fetchpriority={priority ? 'high' : undefined}
+        class:list={['h-full w-full object-cover', imgClass]}
+        style={`object-position:${position}`}
+      />
+    ) : (
+      <div class="slot" role="img" aria-label={alt}>
+        <b>{id}</b>
+        {slot && (
+          <span>
+            {slot.w} x {slot.h}
+          </span>
+        )}
+      </div>
+    )
+  }
+</div>

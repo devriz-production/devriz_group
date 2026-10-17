@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { pages, pageGroups } from '../lib/pages';
+
+const crumbs = [{ label: 'Sitemap' }];
+const listed = pages.filter((p) => p.href !== '/sitemap/');
+---
+
+<Base title="Sitemap" description="Every page on the Devriz Group website, grouped by section." crumbs={crumbs}>
+  <PageHead title="Sitemap" lede="Every page on this website, grouped by section." crumbs={crumbs} narrow />
+
+  <section class="section">
+    <div class="wrap grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        pageGroups.map((group) => {
+          const items = listed.filter((p) => p.group === group);
+          return (
+            items.length > 0 && (
+              <div>
+                <h2 class="display-sm border-t-2 border-ink pt-5">{group}</h2>
+                <ul class="mt-5 grid gap-2.5 text-[0.9375rem]">
+                  {items.map((p) => (
+                    <li>
+                      <a href={p.href} class="link-underline text-ink-2 hover:text-ink" lang={p.href === '/hi/' ? 'hi' : undefined}>
+                        {p.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          );
+        })
+      }
+    </div>
+  </section>
+</Base>

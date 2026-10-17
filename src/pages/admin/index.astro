@@ -1,0 +1,413 @@
+---
+// Site admin: career openings and newsletters.
+// This page is a static shell. Everything it shows comes from /api/admin.php,
+// which checks the password, the session and a CSRF token on every change.
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource-variable/geist/wght.css';
+import '@fontsource-variable/geist-mono/wght.css';
+import '../../styles/global.css';
+import { Image } from 'astro:assets';
+import Icon from '../../components/Icon.astro';
+import Field from '../../components/Field.astro';
+import logoLight from '../../assets/brand/logo-light.png';
+import logoDark from '../../assets/brand/logo-dark.png';
+import { departments } from '../../data/careers';
+
+const jobTypes = ['Full-time', 'Part-time', 'Internship', 'Contract'];
+---
+
+<!doctype html>
+<html lang="en-IN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Site admin | Devriz Group</title>
+    <meta name="description" content="Staff sign-in for posting Devriz Group career openings and newsletters." />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="same-origin" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        try {
+          var t = localStorage.getItem('dg-theme');
+          if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          d.dataset.theme = t;
+          if (localStorage.getItem('dg-contrast') === 'high') d.dataset.contrast = 'high';
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="border-b border-line">
+      <div class="wrap flex min-h-16 flex-wrap items-center justify-between gap-x-6 gap-y-3 py-3">
+        <a href="/" class="flex items-center gap-4" aria-label="Devriz Group website">
+          <Image src={logoLight} alt="" height={120} class="h-9 w-auto dark:hidden" loading="eager" />
+          <Image src={logoDark} alt="" height={120} class="hidden h-9 w-auto dark:block" loading="eager" />
+          <span class="meta border-l border-line-2 pl-4">Site admin</span>
+        </a>
+        <div class="flex flex-wrap items-center gap-2" data-session-actions hidden>
+          <a href="/careers/" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+            View site
+            <Icon name="arrow-up-right" size={15} />
+          </a>
+          <button type="button" class="btn btn-outline btn-sm" data-open-password>Change password</button>
+          <button type="button" class="btn btn-ink btn-sm" data-logout>Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap py-10 lg:py-14">
+      <h1 class="sr-only">Devriz Group site admin</h1>
+
+      <!-- Checking the session -->
+      <section data-view="loading" aria-busy="true" aria-label="Loading">
+        <div class="skeleton h-10 w-72"></div>
+        <div class="skeleton mt-8 h-14"></div>
+        <div class="skeleton mt-3 h-14"></div>
+        <div class="skeleton mt-3 h-14"></div>
+      </section>
+
+      <!-- No PHP behind the page (for example the local preview) -->
+      <section data-view="offline" class="max-w-2xl" hidden>
+        <h2 class="display-md">The admin panel needs the live server.</h2>
+        <p class="lede mt-5">
+          This page works at devrizgroup.com/admin/ once the site is on Hostinger. It cannot run from the local preview, because posting openings and
+          uploading newsletters uses PHP.
+        </p>
+        <button type="button" class="btn btn-outline mt-8" data-retry>Try again</button>
+      </section>
+
+      <!-- First run: choose the password -->
+      <section data-view="setup" class="max-w-xl" hidden>
+        <h2 class="display-md">Create the admin password</h2>
+        <p class="mt-4 text-ink-2">
+          This is the first time the admin panel has been opened. Enter the setup key from the file <code class="font-mono text-ink">ADMIN-SETUP-KEY.txt</code> in
+          the site folder, then choose a password.
+        </p>
+        <p class="mt-6 border border-line-2 bg-bg-2 p-4 text-sm text-ink" data-setup-missing hidden>
+          No setup key was published with this build. Run <code class="font-mono">npm run admin:key</code>, then build and upload the site again.
+        </p>
+        <form class="mt-8 grid gap-6" novalidate data-form="setup">
+          <Field idPrefix="s" name="key" label="Setup key" required autocomplete="off" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" maxlength={40} />
+          <Field idPrefix="s" name="password" label="New password" type="password" required autocomplete="new-password" hint="At least 10 characters. A short sentence is easier to remember than a jumble." />
+          <Field idPrefix="s" name="confirm" label="Repeat the password" type="password" required autocomplete="new-password" />
+          <p class="form-alert" role="alert" data-form-alert hidden></p>
+          <button type="submit" class="btn btn-primary justify-self-start" data-submit>
+            <span data-submit-label>Create password and sign in</span>
+          </button>
+        </form>
+      </section>
+
+      <!-- Sign in -->
+      <section data-view="login" class="max-w-md" hidden>
+        <h2 class="display-md">Sign in</h2>
+        <p class="mt-4 text-ink-2">For staff who post career openings and newsletters.</p>
+        <form class="mt-8 grid gap-6" novalidate data-form="login">
+          <Field idPrefix="l" name="password" label="Password" type="password" required autocomplete="current-password" />
+          <p class="form-alert" role="alert" data-form-alert hidden></p>
+          <button type="submit" class="btn btn-primary justify-self-start" data-submit>
+            <span data-submit-label>Sign in</span>
+            <Icon name="arrow-right" size={18} />
+          </button>
+        </form>
+        <p class="mt-8 text-sm text-ink-3">Forgotten the password? The steps to reset it are in HOSTING.md and in ADMIN-SETUP-KEY.txt.</p>
+      </section>
+
+      <!-- Signed in -->
+      <section data-view="app" hidden>
+        <div role="tablist" aria-label="Sections" class="flex gap-8 border-b border-line">
+          <button type="button" role="tab" id="tab-jobs" aria-controls="panel-jobs" aria-selected="true" class="tab" data-tab="jobs">
+            Career openings
+            <span class="tab-count" data-count="jobs">0</span>
+          </button>
+          <button type="button" role="tab" id="tab-newsletters" aria-controls="panel-newsletters" aria-selected="false" tabindex="-1" class="tab" data-tab="newsletters">
+            Newsletters
+            <span class="tab-count" data-count="newsletters">0</span>
+          </button>
+        </div>
+
+        <!-- Career openings -->
+        <div role="tabpanel" id="panel-jobs" aria-labelledby="tab-jobs" tabindex="0" class="pt-8" data-panel="jobs">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 class="display-md">Career openings</h2>
+              <p class="mt-2 max-w-[60ch] text-ink-2">Published openings appear on the careers page within a couple of minutes. Drafts and closed roles stay here only.</p>
+            </div>
+            <button type="button" class="btn btn-primary" data-new="job">
+              <Icon name="plus" size={18} />
+              New opening
+            </button>
+          </div>
+          <ul class="mt-8 border-b border-line" data-list="jobs"></ul>
+          <div class="mt-8 border border-line bg-surface p-10 text-center" data-empty="jobs" hidden>
+            <p class="display-sm font-display font-semibold text-ink">No openings yet.</p>
+            <p class="mt-2 text-ink-2">Post the first one and it will appear on the careers page.</p>
+          </div>
+        </div>
+
+        <!-- Newsletters -->
+        <div role="tabpanel" id="panel-newsletters" aria-labelledby="tab-newsletters" tabindex="0" class="pt-8" data-panel="newsletters" hidden>
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 class="display-md">Newsletters</h2>
+              <p class="mt-2 max-w-[60ch] text-ink-2">Upload each issue as a PDF. Published issues are listed on the newsletter page, newest first.</p>
+            </div>
+            <button type="button" class="btn btn-primary" data-new="newsletter">
+              <Icon name="upload-simple" size={18} />
+              Upload newsletter
+            </button>
+          </div>
+          <ul class="mt-8 border-b border-line" data-list="newsletters"></ul>
+          <div class="mt-8 border border-line bg-surface p-10 text-center" data-empty="newsletters" hidden>
+            <p class="display-sm font-display font-semibold text-ink">No newsletters yet.</p>
+            <p class="mt-2 text-ink-2">Upload the first issue as a PDF.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Opening editor -->
+    <dialog class="sheet" data-dialog="job" aria-labelledby="job-dialog-title">
+      <form class="grid gap-6 p-6 lg:p-8" novalidate data-form="job">
+        <div class="flex items-start justify-between gap-6">
+          <h2 class="display-sm" id="job-dialog-title" data-dialog-title>New opening</h2>
+          <button type="button" class="icon-btn" aria-label="Close" data-close><Icon name="x" size={20} /></button>
+        </div>
+        <input type="hidden" name="id" />
+        <div class="grid gap-6 sm:grid-cols-2">
+          <Field idPrefix="j" name="title" label="Job title" required maxlength={120} class="sm:col-span-2" />
+          <Field idPrefix="j" name="department" label="Department" required maxlength={60} list="department-options" hint="Pick one from the list or type a new one." />
+          <Field idPrefix="j" name="type" label="Employment type" type="select" options={jobTypes} emptyOption="Select" required />
+          <Field idPrefix="j" name="location" label="Location" required maxlength={120} placeholder="Delhi NCR / Noida" />
+          <Field idPrefix="j" name="experience" label="Experience" maxlength={60} placeholder="1-3 years" />
+        </div>
+        <datalist id="department-options">
+          {departments.map((d) => <option value={d} />)}
+        </datalist>
+        <Field idPrefix="j" name="summary" label="Summary" type="textarea" rows={3} maxlength={600} required hint="One or two sentences on what the role is for." />
+        <Field idPrefix="j" name="points" label="Responsibilities" type="textarea" rows={5} hint="One per line, up to 12 lines." />
+        <Field idPrefix="j" name="fit" label="Requirements" type="textarea" rows={3} maxlength={600} hint="Skills, tools or experience the candidate needs." />
+        <div class="grid gap-6 sm:grid-cols-2">
+          <div class="field" data-field>
+            <label for="j-status">Status<span class="req" aria-hidden="true"> *</span></label>
+            <select id="j-status" name="status" class="input" required aria-describedby="j-status-error">
+              <option value="published">Published: shown on the careers page</option>
+              <option value="draft">Draft: saved, not shown</option>
+              <option value="closed">Closed: no longer hiring, not shown</option>
+            </select>
+            <p class="error" id="j-status-error" aria-live="polite" hidden></p>
+          </div>
+          <Field idPrefix="j" name="posted" label="Posted on" type="date" hint="Leave empty for today." />
+        </div>
+        <p class="form-alert" role="alert" data-form-alert hidden></p>
+        <div class="flex flex-wrap justify-end gap-3 border-t border-line pt-6">
+          <button type="button" class="btn btn-outline" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary" data-submit><span data-submit-label>Save opening</span></button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Newsletter editor -->
+    <dialog class="sheet" data-dialog="newsletter" aria-labelledby="newsletter-dialog-title">
+      <form class="grid gap-6 p-6 lg:p-8" novalidate data-form="newsletter" enctype="multipart/form-data">
+        <div class="flex items-start justify-between gap-6">
+          <h2 class="display-sm" id="newsletter-dialog-title" data-dialog-title>Upload newsletter</h2>
+          <button type="button" class="icon-btn" aria-label="Close" data-close><Icon name="x" size={20} /></button>
+        </div>
+        <input type="hidden" name="id" />
+        <Field idPrefix="n" name="title" label="Title" required maxlength={160} placeholder="Devriz Group Newsletter, October 2026" />
+        <div class="grid gap-6 sm:grid-cols-2">
+          <Field idPrefix="n" name="date" label="Issue date" type="date" required />
+          <div class="field" data-field>
+            <label for="n-status">Status<span class="req" aria-hidden="true"> *</span></label>
+            <select id="n-status" name="status" class="input" required aria-describedby="n-status-error">
+              <option value="published">Published: shown on the site</option>
+              <option value="draft">Draft: saved, not shown</option>
+            </select>
+            <p class="error" id="n-status-error" aria-live="polite" hidden></p>
+          </div>
+        </div>
+        <Field idPrefix="n" name="summary" label="Summary" type="textarea" rows={3} maxlength={600} hint="A line or two on what is in this issue." />
+        <Field idPrefix="n" name="file" label="PDF file" type="file" accept="application/pdf,.pdf" required hint="PDF only." />
+        <p class="form-alert" role="alert" data-form-alert hidden></p>
+        <div class="flex flex-wrap justify-end gap-3 border-t border-line pt-6">
+          <button type="button" class="btn btn-outline" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary" data-submit><span data-submit-label>Save newsletter</span></button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Change password -->
+    <dialog class="sheet sheet-narrow" data-dialog="password" aria-labelledby="password-dialog-title">
+      <form class="grid gap-6 p-6 lg:p-8" novalidate data-form="password">
+        <div class="flex items-start justify-between gap-6">
+          <h2 class="display-sm" id="password-dialog-title">Change password</h2>
+          <button type="button" class="icon-btn" aria-label="Close" data-close><Icon name="x" size={20} /></button>
+        </div>
+        <Field idPrefix="p" name="current" label="Current password" type="password" required autocomplete="current-password" />
+        <Field idPrefix="p" name="next" label="New password" type="password" required autocomplete="new-password" hint="At least 10 characters." />
+        <Field idPrefix="p" name="confirm" label="Repeat the new password" type="password" required autocomplete="new-password" />
+        <p class="hint">Changing the password signs out every other browser.</p>
+        <p class="form-alert" role="alert" data-form-alert hidden></p>
+        <div class="flex flex-wrap justify-end gap-3 border-t border-line pt-6">
+          <button type="button" class="btn btn-outline" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary" data-submit><span data-submit-label>Change password</span></button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Delete confirmation -->
+    <dialog class="sheet sheet-narrow" data-dialog="confirm" aria-labelledby="confirm-dialog-title">
+      <div class="grid gap-5 p-6 lg:p-8">
+        <h2 class="display-sm" id="confirm-dialog-title" data-confirm-title>Delete this?</h2>
+        <p class="text-ink-2" data-confirm-text></p>
+        <div class="flex flex-wrap justify-end gap-3 border-t border-line pt-6">
+          <button type="button" class="btn btn-outline" data-close>Keep it</button>
+          <button type="button" class="btn btn-ink" data-confirm-yes>Delete</button>
+        </div>
+      </div>
+    </dialog>
+
+    <template data-row="jobs">
+      <li class="grid gap-x-6 gap-y-3 border-t border-line py-5 lg:grid-cols-12 lg:items-center">
+        <div class="lg:col-span-5">
+          <p class="font-display text-lg font-semibold tracking-tight text-ink" data-f="title"></p>
+          <p class="mt-0.5 text-sm text-ink-3" data-f="department"></p>
+        </div>
+        <p class="text-sm text-ink-2 lg:col-span-3" data-f="meta"></p>
+        <p class="lg:col-span-2">
+          <span class="status" data-f="status"></span>
+          <span class="mt-1 block text-xs text-ink-3" data-f="posted"></span>
+        </p>
+        <div class="flex gap-2 lg:col-span-2 lg:justify-end">
+          <button type="button" class="btn btn-outline btn-sm" data-edit>Edit</button>
+          <button type="button" class="icon-btn" data-delete><Icon name="trash" size={18} /></button>
+        </div>
+      </li>
+    </template>
+
+    <template data-row="newsletters">
+      <li class="grid gap-x-6 gap-y-3 border-t border-line py-5 lg:grid-cols-12 lg:items-center">
+        <div class="lg:col-span-6">
+          <p class="font-display text-lg font-semibold tracking-tight text-ink" data-f="title"></p>
+          <p class="mt-0.5 text-sm text-ink-3" data-f="summary"></p>
+        </div>
+        <p class="text-sm text-ink-2 lg:col-span-2" data-f="meta"></p>
+        <p class="lg:col-span-2"><span class="status" data-f="status"></span></p>
+        <div class="flex gap-2 lg:col-span-2 lg:justify-end">
+          <button type="button" class="btn btn-outline btn-sm" data-edit>Edit</button>
+          <button type="button" class="icon-btn" data-delete><Icon name="trash" size={18} /></button>
+        </div>
+      </li>
+    </template>
+
+    <div class="toast" role="status" aria-live="polite" data-toast hidden></div>
+
+    <script>
+      import '../../scripts/admin.ts';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .tab {
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    color: var(--ink-3);
+    display: inline-flex;
+    font-weight: 600;
+    gap: 0.625rem;
+    margin-bottom: -1px;
+    padding: 0.875rem 0;
+    transition: color 0.2s;
+  }
+  .tab:hover {
+    color: var(--ink);
+  }
+  .tab[aria-selected='true'] {
+    border-bottom-color: var(--accent);
+    color: var(--ink);
+  }
+  .tab-count {
+    background: var(--bg-2);
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    min-width: 1.75rem;
+    padding: 0.125rem 0.375rem;
+    text-align: center;
+  }
+  .icon-btn {
+    border: 1px solid var(--line-2);
+    color: var(--ink);
+    display: grid;
+    flex-shrink: 0;
+    height: 2.625rem;
+    place-items: center;
+    transition: border-color 0.2s;
+    width: 2.625rem;
+  }
+  .icon-btn:hover {
+    border-color: var(--ink);
+  }
+  .status {
+    align-items: center;
+    color: var(--ink);
+    display: inline-flex;
+    font-size: 0.875rem;
+    font-weight: 500;
+    gap: 0.5rem;
+  }
+  .status::before {
+    border: 1px solid var(--ink-3);
+    content: '';
+    height: 0.5rem;
+    width: 0.5rem;
+  }
+  .status[data-status='published']::before {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .status[data-status='closed']::before {
+    background: var(--ink-3);
+  }
+  .form-alert {
+    background: var(--bg-2);
+    border-left: 2px solid #b3261e;
+    color: var(--ink);
+    font-size: 0.9375rem;
+    padding: 0.75rem 1rem;
+  }
+  dialog.sheet {
+    background: var(--bg);
+    border: 1px solid var(--line-2);
+    color: var(--ink-2);
+    margin: auto;
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    padding: 0;
+    width: min(46rem, calc(100vw - 2rem));
+  }
+  dialog.sheet-narrow {
+    width: min(30rem, calc(100vw - 2rem));
+  }
+  dialog.sheet::backdrop {
+    background: rgb(var(--scrim) / 0.62);
+  }
+  .toast {
+    background: var(--ink);
+    bottom: 1.5rem;
+    color: var(--bg);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    left: 50%;
+    max-width: calc(100vw - 2rem);
+    padding: 0.875rem 1.25rem;
+    position: fixed;
+    transform: translateX(-50%);
+    z-index: 70;
+  }
+</style>

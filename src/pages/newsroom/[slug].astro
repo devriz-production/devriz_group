@@ -1,0 +1,123 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import Media from '../../components/Media.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { news, categories, type NewsItem } from '../../data/news';
+import { formatDate, site } from '../../data/site';
+import { hasImage } from '../../lib/images';
+
+export function getStaticPaths() {
+  return news.map((item) => ({ params: { slug: item.slug }, props: { item } }));
+}
+
+interface Props {
+  item: NewsItem;
+}
+
+const { item } = Astro.props;
+const category = categories.find((c) => c.id === item.category)!.label;
+const others = news.filter((n) => n.slug !== item.slug);
+const crumbs = [{ label: 'Newsroom', href: '/newsroom/' }, { label: item.title }];
+const leadImage = item.slug === 'devriz-group-strengthens-multi-sector-presence' ? 'news-multi-sector' : undefined;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: item.title,
+  datePublished: item.date,
+  description: item.summary,
+  author: { '@id': `${site.url}/#organization` },
+  publisher: { '@id': `${site.url}/#organization` },
+  mainEntityOfPage: `${site.url}/newsroom/${item.slug}/`,
+};
+---
+
+<Base title={item.title} description={item.summary} crumbs={crumbs} schema={schema}>
+  <PageHead title={item.title} lede={item.summary} crumbs={crumbs} kicker={category} narrow>
+    <p class="meta">
+      <time datetime={item.date}>{formatDate(item.date)}</time>
+    </p>
+  </PageHead>
+
+  <div class="wrap grid gap-x-16 gap-y-10 py-14 lg:grid-cols-12 lg:py-20">
+    <article class="prose lg:col-span-8">
+      {leadImage && hasImage(leadImage) && <Media id={leadImage} alt="" ratio="16/9" sizes="(min-width: 1024px) 60vw, 100vw" priority />}
+      {
+        item.body.map((block, i) => (
+          <>
+            {block.heading && <h2>{block.heading}</h2>}
+            {block.paragraphs?.map((p, j) => (
+              <p>
+                {i === 0 && j === 0 && item.dateline && <strong>{`${item.dateline}, ${formatDate(item.date)}: `}</strong>}
+                {p}
+              </p>
+            ))}
+            {block.list && (
+              <ul>
+                {block.list.map((l) => (
+                  <li>{l}</li>
+                ))}
+              </ul>
+            )}
+          </>
+        ))
+      }
+      {
+        item.category === 'press-release' && (
+          <>
+            <h2>About Devriz Group</h2>
+            <p>
+              Devriz Group is an Indian diversified business group with interests spanning healthcare, technology, construction, logistics,
+              agriculture, trading, consumer products, security services and social welfare. Its corporate office is in Noida, Uttar Pradesh.
+            </p>
+          </>
+        )
+      }
+    </article>
+
+    <aside class="no-print self-start lg:sticky lg:top-28 lg:col-span-4">
+      <div class="border border-line bg-surface p-6">
+        <p class="meta">Media contact</p>
+        <p class="mt-3 grid gap-1">
+          <a href={`mailto:${site.email}?subject=Media%20enquiry`} class="link-underline w-fit font-medium text-ink">{site.email}</a>
+          <a href={site.phoneHref} class="link-underline w-fit font-medium text-ink">{site.phone}</a>
+        </p>
+        <a href="/brand-assets/" class="link-arrow mt-5 text-sm">
+          Logos and boilerplate
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+      <button type="button" class="link-arrow mt-5 text-sm" onclick="window.print()">
+        <Icon name="printer" size={16} />
+        Print this page
+      </button>
+    </aside>
+  </div>
+
+  {
+    others.length > 0 && (
+      <section class="no-print border-t border-line">
+        <div class="wrap py-14 lg:py-20">
+          <h2 class="display-sm">More from the newsroom</h2>
+          <ul class="mt-8 border-b border-line">
+            {others.map((n) => (
+              <li class="border-t border-line">
+                <a href={`/newsroom/${n.slug}/`} class="group flex items-center justify-between gap-8 py-6">
+                  <span>
+                    <span class="meta block">{formatDate(n.date)}</span>
+                    <span class="display-sm mt-2 block font-display font-semibold text-ink transition-colors group-hover:text-accent-ink">{n.title}</span>
+                  </span>
+                  <Icon name="arrow-right" size={22} class="shrink-0 text-ink transition-transform duration-300 group-hover:translate-x-1" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBand heading="Writing about the group?" text="Send your questions and deadline to the corporate office and we will route them to the right person." href="/contact/?enquiry=media" />
+</Base>

@@ -1,0 +1,163 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import logoLight from '../assets/brand/logo-light.png';
+import logoDark from '../assets/brand/logo-dark.png';
+import { site } from '../data/site';
+
+const crumbs = [{ label: 'Newsroom', href: '/newsroom/' }, { label: 'Brand assets' }];
+
+const downloads = [
+  { file: '/brand/devriz-group-logo-light.png', label: 'Logo for light backgrounds', note: 'PNG, transparent, 1600 px wide', image: logoLight, surface: 'bg-[#f6f7f9]' },
+  { file: '/brand/devriz-group-logo-dark.png', label: 'Logo for dark backgrounds', note: 'PNG, transparent, 1600 px wide', image: logoDark, surface: 'bg-[#0b1422]' },
+  { file: '/brand/devriz-group-logo-on-white.png', label: 'Logo on white', note: 'PNG, 1600 x 900, for documents and slides', image: logoLight, surface: 'bg-white' },
+];
+
+const colours = [
+  { name: 'Ink', hex: '#0B1422', use: 'Text and dark surfaces', light: true },
+  { name: 'Paper', hex: '#F6F7F9', use: 'Page background', light: false },
+  { name: 'Devriz Gold', hex: '#E2AB1F', use: 'The single accent. Buttons and highlights.', light: false },
+  { name: 'Steel', hex: '#5B6779', use: 'Secondary text', light: true },
+];
+
+const rules = [
+  { ok: true, text: 'Use the logo files as supplied, at any size.' },
+  { ok: true, text: 'Keep clear space around the logo equal to the height of the “D”.' },
+  { ok: true, text: 'Place the dark version on dark photographs and the light version on pale ones.' },
+  { ok: false, text: 'Do not redraw, stretch, recolour or add effects to the logo.' },
+  { ok: false, text: 'Do not use the logo to suggest endorsement or partnership without written permission.' },
+  { ok: false, text: 'Do not combine the logo with another company’s mark.' },
+];
+
+const boilerplate =
+  'Devriz Group is a diversified Indian business group that builds and operates companies across healthcare and wellness, technology and security, infrastructure and real estate, consumer products, agriculture and trading, logistics and education. Its companies include Devriz Healthcare, Kotil Skin Science, Kotil Aesthetic Academy and Global Alpha Tech Security. The group is led by Chairman Krishna Kumar Singh, has its corporate office in Noida, and operates across Delhi, Uttar Pradesh and Bihar.';
+---
+
+<Base title="Brand assets" description="Download the Devriz Group logo, see the brand colours and typefaces, and copy the approved description of the group." crumbs={crumbs}>
+  <PageHead
+    title="Brand assets"
+    lede="Logos, colours and approved wording for journalists, partners and suppliers who need to refer to Devriz Group."
+    crumbs={crumbs}
+    narrow
+  />
+
+  <!-- Logos -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="display-lg">Logo</h2>
+      <ul class="mt-12 grid gap-5 lg:grid-cols-3">
+        {
+          downloads.map((d) => (
+            <li class="flex flex-col border border-line">
+              <div class:list={['grid aspect-[16/10] place-items-center p-10', d.surface]}>
+                <Image src={d.image} alt="" height={200} class="h-20 w-auto" />
+              </div>
+              <div class="flex flex-1 items-end justify-between gap-6 border-t border-line bg-surface p-6">
+                <p>
+                  <span class="block font-medium text-ink">{d.label}</span>
+                  <span class="mt-1 block text-sm text-ink-3">{d.note}</span>
+                </p>
+                <a href={d.file} download class="grid size-11 shrink-0 place-items-center border border-line-2 text-ink transition-colors hover:border-ink" aria-label={`Download: ${d.label}`}>
+                  <Icon name="download-simple" size={20} />
+                </a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+
+      <ul class="mt-12 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+        {
+          rules.map((r) => (
+            <li class="flex items-start gap-3 text-ink-2">
+              <Icon name={r.ok ? 'check' : 'x'} size={20} class:list={['mt-0.5 shrink-0', r.ok ? 'text-accent-ink' : 'text-ink-3']} />
+              {r.text}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Colour and type -->
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap grid gap-x-16 gap-y-14 lg:grid-cols-2">
+      <div>
+        <h2 class="display-md">Colour</h2>
+        <ul class="mt-8 grid grid-cols-2 gap-5">
+          {
+            colours.map((c) => (
+              <li class="border border-line-2 bg-surface">
+                <div class="aspect-[16/9]" style={`background:${c.hex}`} />
+                <div class="p-5">
+                  <p class="font-medium text-ink">{c.name}</p>
+                  <p class="font-mono text-sm text-ink-2">{c.hex}</p>
+                  <p class="mt-2 text-sm text-ink-3">{c.use}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <h2 class="display-md">Typography</h2>
+        <dl class="mt-8 border-b border-line-2">
+          <div class="border-t border-line-2 py-6">
+            <dt class="meta">Headlines</dt>
+            <dd class="mt-3 font-display text-4xl font-semibold tracking-tight text-ink">Archivo Semibold</dd>
+          </div>
+          <div class="border-t border-line-2 py-6">
+            <dt class="meta">Text</dt>
+            <dd class="mt-3 text-2xl text-ink">Geist Regular and Medium</dd>
+          </div>
+          <div class="border-t border-line-2 py-6">
+            <dt class="meta">Labels and figures</dt>
+            <dd class="mt-3 font-mono text-xl text-ink">Geist Mono</dd>
+          </div>
+        </dl>
+        <p class="mt-5 text-sm text-ink-3">All three are open-source typefaces, free to use in print and on screen.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boilerplate -->
+  <section class="section">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <h2 class="display-md">About Devriz Group</h2>
+        <p class="mt-5 max-w-[38ch] text-ink-2">Use this paragraph, unchanged, when you need a short description of the group.</p>
+      </div>
+      <div class="lg:col-span-8">
+        <blockquote class="border border-line bg-surface p-7 text-[1.0625rem] leading-relaxed text-ink lg:p-9" data-boilerplate>{boilerplate}</blockquote>
+        <div class="mt-5 flex flex-wrap items-center gap-5">
+          <button type="button" class="btn btn-ink btn-sm" data-copy>
+            <Icon name="copy" size={16} />
+            <span data-copy-label>Copy text</span>
+          </button>
+          <p class="text-sm text-ink-3">
+            Need something else?
+            <a href={`mailto:${site.email}?subject=Media%20enquiry`} class="link-underline text-ink">{site.email}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-copy]');
+  const label = document.querySelector<HTMLElement>('[data-copy-label]');
+  const source = document.querySelector<HTMLElement>('[data-boilerplate]');
+  button?.addEventListener('click', async () => {
+    if (!label || !source) return;
+    try {
+      await navigator.clipboard.writeText(source.textContent?.trim() ?? '');
+      label.textContent = 'Copied';
+    } catch {
+      label.textContent = 'Select the text to copy';
+    }
+    window.setTimeout(() => (label.textContent = 'Copy text'), 2400);
+  });
+</script>

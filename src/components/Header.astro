@@ -1,0 +1,293 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import logoLight from '../assets/brand/logo-light.png';
+import logoDark from '../assets/brand/logo-dark.png';
+import { mainNav, utilityNav, site } from '../data/site';
+import { sectors } from '../data/sectors';
+import { companiesIn } from '../data/companies';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+---
+
+<div class="no-print hidden border-b border-line bg-bg-2 lg:block">
+  <div class="wrap flex h-10 items-center justify-between text-[0.8125rem] text-ink-2">
+    <ul class="flex items-center gap-6">
+      {
+        utilityNav.map((item) => (
+          <li>
+            <a href={item.href} class="transition-colors hover:text-ink">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex items-center gap-5">
+      <div class="flex items-center" role="group" aria-label="Text size">
+        <button type="button" class="pref-btn" data-text-size="sm" aria-label="Smaller text" aria-pressed="false">A-</button>
+        <button type="button" class="pref-btn" data-text-size="md" aria-label="Default text size" aria-pressed="true">A</button>
+        <button type="button" class="pref-btn" data-text-size="lg" aria-label="Larger text" aria-pressed="false">A+</button>
+      </div>
+      <button type="button" class="flex items-center gap-1.5 transition-colors hover:text-ink" data-contrast-toggle aria-pressed="false">
+        <Icon name="circle-half" size={15} />
+        High contrast
+      </button>
+      <button type="button" class="flex items-center gap-1.5 transition-colors hover:text-ink" data-theme-toggle aria-label="Switch colour theme">
+        <Icon name="moon" size={15} class="dark:hidden" />
+        <Icon name="sun" size={15} class="hidden dark:block" />
+        <span class="dark:hidden">Dark</span>
+        <span class="hidden dark:inline">Light</span>
+      </button>
+      <a href="/hi/" lang="hi" hreflang="hi" class="transition-colors hover:text-ink">हिन्दी</a>
+    </div>
+  </div>
+</div>
+
+<header class="no-print sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md" data-header>
+  <div class="wrap flex h-[4.5rem] items-center justify-between gap-6">
+    <a href="/" class="shrink-0" aria-label="Devriz Group home">
+      <Image src={logoLight} alt="" height={120} class="h-10 w-auto dark:hidden" loading="eager" />
+      <Image src={logoDark} alt="" height={120} class="hidden h-10 w-auto dark:block" loading="eager" />
+    </a>
+
+    <nav aria-label="Primary" class="hidden lg:block">
+      <ul class="flex items-center gap-x-5 xl:gap-x-8">
+        {
+          mainNav.map((item) => (
+            <li class:list={['flex items-center', 'mega' in item && 'group/mega']} data-mega-root={'mega' in item ? '' : undefined}>
+              <a href={item.href} class="nav-link" aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+              {'mega' in item && (
+                <>
+                  <button
+                    type="button"
+                    class="ml-0.5 grid size-7 place-items-center text-ink-3 transition-colors hover:text-ink"
+                    aria-expanded="false"
+                    aria-controls="mega-businesses"
+                    aria-label="Show businesses menu"
+                    data-mega-trigger
+                  >
+                    <Icon name="caret-down" size={13} class="transition-transform duration-300 group-data-[open]/mega:rotate-180" />
+                  </button>
+                  <div
+                    id="mega-businesses"
+                    class="mega-panel absolute inset-x-0 top-full border-b border-line bg-surface shadow-[0_24px_48px_-24px_rgb(8_15_27/0.28)]"
+                    data-mega-panel
+                    hidden
+                  >
+                    <div class="wrap grid grid-cols-12 gap-x-8 py-10">
+                      <div class="col-span-3 flex flex-col justify-between border-r border-line pr-8">
+                        <div>
+                          <p class="display-sm font-display font-semibold text-ink">Seven sectors, one operating standard.</p>
+                          <p class="mt-3 text-sm text-ink-3">
+                            Each company runs its own operations and answers to the same standard for governance, reporting and quality.
+                          </p>
+                        </div>
+                        <div class="mt-8 grid gap-1">
+                          <a href="/businesses/" class="link-arrow text-sm">
+                            All businesses <Icon name="arrow-right" size={15} />
+                          </a>
+                          <a href="/companies/" class="link-arrow text-sm">
+                            All companies <Icon name="arrow-right" size={15} />
+                          </a>
+                        </div>
+                      </div>
+                      <ul class="col-span-9 grid grid-cols-4 gap-x-8 gap-y-8">
+                        {sectors.map((sector) => (
+                          <li>
+                            <a href={`/businesses/${sector.slug}/`} class="group/s flex items-start gap-2 font-display text-[0.9375rem] font-semibold leading-snug text-ink">
+                              <span class="underline decoration-transparent decoration-1 underline-offset-4 transition-colors group-hover/s:decoration-accent">
+                                {sector.name}
+                              </span>
+                            </a>
+                            <ul class="mt-2.5 grid gap-1.5">
+                              {companiesIn(sector.slug).map((c) => (
+                                <li>
+                                  <a href={`/companies/${c.slug}/`} class="text-[0.8125rem] text-ink-3 transition-colors hover:text-ink">
+                                    {c.name}
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/search/" class="grid size-11 place-items-center text-ink transition-colors hover:bg-bg-2" aria-label="Search this site">
+        <Icon name="magnifying-glass" size={20} />
+      </a>
+      <a href="/contact/" class="btn btn-primary btn-sm hidden sm:inline-flex">Contact us</a>
+      <button
+        type="button"
+        class="grid size-11 place-items-center text-ink transition-colors hover:bg-bg-2 lg:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="drawer"
+        data-drawer-open
+      >
+        <Icon name="list" size={24} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="drawer" class="no-print fixed inset-0 z-60 overflow-y-auto bg-bg lg:hidden" role="dialog" aria-modal="true" aria-label="Menu" data-drawer hidden>
+  <div class="wrap flex h-[4.5rem] items-center justify-between border-b border-line">
+    <a href="/" aria-label="Devriz Group home">
+      <Image src={logoLight} alt="" height={120} class="h-10 w-auto dark:hidden" />
+      <Image src={logoDark} alt="" height={120} class="hidden h-10 w-auto dark:block" />
+    </a>
+    <button type="button" class="grid size-11 place-items-center text-ink" aria-label="Close menu" data-drawer-close>
+      <Icon name="x" size={24} />
+    </button>
+  </div>
+  <nav aria-label="Mobile" class="wrap pb-16 pt-4">
+    <ul>
+      {
+        mainNav.map((item) => (
+          <li class="border-b border-line">
+            {'mega' in item ? (
+              <details class="group">
+                <summary class="flex items-center justify-between py-4 font-display text-2xl font-semibold tracking-tight text-ink">
+                  {item.label}
+                  <Icon name="plus" size={20} class="text-ink-3 transition-transform duration-300 group-open:rotate-45" />
+                </summary>
+                <ul class="grid gap-1 pb-5">
+                  <li>
+                    <a href="/businesses/" class="block py-2 font-medium text-ink">
+                      All businesses
+                    </a>
+                  </li>
+                  {sectors.map((s) => (
+                    <li>
+                      <a href={`/businesses/${s.slug}/`} class="block py-2 text-ink-2">
+                        {s.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ) : (
+              <a href={item.href} class="block py-4 font-display text-2xl font-semibold tracking-tight text-ink" aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    <a href="/contact/" class="btn btn-primary mt-8 w-full">Contact us</a>
+    <ul class="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-ink-2">
+      {
+        utilityNav.map((item) => (
+          <li>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))
+      }
+      <li>
+        <a href="/hi/" lang="hi" hreflang="hi">हिन्दी</a>
+      </li>
+    </ul>
+    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-line pt-6 text-sm text-ink-2">
+      <div class="flex items-center" role="group" aria-label="Text size">
+        <button type="button" class="pref-btn" data-text-size="sm" aria-label="Smaller text" aria-pressed="false">A-</button>
+        <button type="button" class="pref-btn" data-text-size="md" aria-label="Default text size" aria-pressed="true">A</button>
+        <button type="button" class="pref-btn" data-text-size="lg" aria-label="Larger text" aria-pressed="false">A+</button>
+      </div>
+      <button type="button" class="flex items-center gap-1.5" data-contrast-toggle aria-pressed="false">
+        <Icon name="circle-half" size={16} />
+        High contrast
+      </button>
+      <button type="button" class="flex items-center gap-1.5" data-theme-toggle aria-label="Switch colour theme">
+        <Icon name="moon" size={16} class="dark:hidden" />
+        <Icon name="sun" size={16} class="hidden dark:block" />
+        <span class="dark:hidden">Dark</span>
+        <span class="hidden dark:inline">Light</span>
+      </button>
+    </div>
+    <p class="mt-8 text-sm text-ink-3">
+      <a href={site.phoneHref} class="text-ink">{site.phone}</a>
+      <br />
+      <a href={`mailto:${site.email}`} class="text-ink">{site.email}</a>
+    </p>
+  </nav>
+</div>
+
+<style>
+  .nav-link {
+    color: var(--ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    padding-block: 0.5rem;
+    position: relative;
+    white-space: nowrap;
+  }
+  .nav-link::after {
+    background: var(--accent);
+    bottom: 0;
+    content: '';
+    height: 2px;
+    left: 0;
+    position: absolute;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease-out);
+    width: 100%;
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+  .pref-btn {
+    border: 1px solid var(--line-2);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    height: 1.625rem;
+    margin-left: -1px;
+    min-width: 1.875rem;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .pref-btn:hover {
+    color: var(--ink);
+  }
+  .pref-btn[aria-pressed='true'] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+  [data-contrast-toggle][aria-pressed='true'] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .mega-panel:not([hidden]) {
+    animation: mega-in 0.32s var(--ease-out);
+  }
+  @keyframes mega-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mega-panel:not([hidden]) {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+*.zip
+
+# Admin setup key: private, never committed or uploaded
+ADMIN-SETUP-KEY.txt

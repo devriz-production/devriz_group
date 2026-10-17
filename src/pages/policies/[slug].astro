@@ -1,0 +1,12 @@
+---
+import PolicyPage from '../../components/PolicyPage.astro';
+import { nestedPolicies } from '../../lib/policies';
+
+export function getStaticPaths() {
+  return nestedPolicies.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+---
+
+<PolicyPage slug={slug!} />
