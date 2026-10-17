@@ -1,6 +1,6 @@
 # Devriz Group website
 
-Corporate site for Devriz Group, replacing the WordPress site at devrizgroup.com. Static Astro 7 build with Tailwind v4, uploaded by hand to Hostinger. Owner: Nitin (tomar@devrizhealthcare.in), who directs the work and is not a full-time developer, so explain changes in plain language.
+Corporate site for Devriz Group, replacing the WordPress site at devrizgroup.com. Static Astro 7 build with Tailwind v4, uploaded by hand to Hostinger. The owner directs the work and is not a full-time developer, so explain changes in plain language.
 
 Read `README.md` first. It has the commands, the file map, the design rules and the list of facts still waiting on the group's sign-off. `HOSTING.md` covers deployment and the admin panel. `IMAGE-PROMPTS.md` lists every photograph and its prompt.
 
