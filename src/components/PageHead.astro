@@ -13,7 +13,14 @@ interface Props {
   lede?: string;
   crumbs?: Crumb[];
   kicker?: string;
-  image?: { id: string; alt: string; fallback?: string | string[]; position?: string };
+  image?: {
+    id: string;
+    alt: string;
+    fallback?: string | string[];
+    position?: string;
+    class?: string;
+    ratio?: string;
+  };
   narrow?: boolean;
 }
 
@@ -70,8 +77,9 @@ const { title, lede, crumbs = [], kicker, image, narrow = false } = Astro.props;
           alt={image.alt}
           fallback={image.fallback}
           position={image.position}
+          ratio={image.ratio}
           sizes="(min-width: 1360px) 1264px, 100vw"
-          class="aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]"
+          class={image.class ?? 'aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]'}
           priority
         />
       </div>
