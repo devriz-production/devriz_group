@@ -1,0 +1,232 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import Media from '../components/Media.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { hasImage } from '../lib/images';
+
+const crumbs = [{ label: 'CSR & Events' }];
+
+const categories = [
+  { id: 'philanthropy', label: 'Philanthropy' },
+  { id: 'sports', label: 'Sports events' },
+  { id: 'community', label: 'Community service' },
+];
+
+const initiatives = [
+  {
+    category: 'philanthropy',
+    name: 'Mobility Aid Distribution',
+    kind: 'Disability support',
+    text: 'Devriz Group works with local communities to distribute custom mobility aids — including hand-powered tricycles — to persons with disabilities. The initiative ensures that those who need support most are not left behind, and that independence remains within reach.',
+    image: 'csr-disability-support',
+    alt: 'Group photo of volunteers and recipients with mobility aid tricycles distributed by the group',
+  },
+  {
+    category: 'philanthropy',
+    name: 'Mid-Day Meal Programme',
+    kind: 'Child nutrition',
+    text: 'Through partnerships with local schools, the group supports mid-day meal programmes that provide hot, freshly-prepared food to children. Proper nutrition is the foundation of attention, attendance and educational outcomes.',
+    image: 'csr-child-nutrition',
+    alt: 'School children seated in a row being served mid-day meals by volunteers',
+  },
+  {
+    category: 'community',
+    name: 'Tree Plantation Drives',
+    kind: 'Environmental action',
+    text: 'Volunteers from across the group participate in large-scale tree plantation drives, adding green cover in urban and semi-urban areas. The effort is part of the group\'s long-term commitment to ecological responsibility and community well-being.',
+    image: 'csr-tree-planting',
+    alt: 'Young volunteers planting saplings during a group-organised tree plantation drive',
+  },
+  {
+    category: 'community',
+    name: 'Community Clean-up Campaigns',
+    kind: 'Swachh Bharat',
+    text: 'Regular clean-up drives organised in collaboration with local communities and institutions. Group members join hands with residents to clear waste, raise awareness about sanitation and contribute to a cleaner neighbourhood.',
+    // NOTE: this photo is currently saved as "csr-volleyball-youth".
+    // If you rename the file to "csr-community-cleanup", change the id below to match.
+    image: 'csr-volleyball-youth',
+    alt: 'Community volunteers picking up waste and cleaning a neighbourhood street',
+  },
+  {
+    category: 'sports',
+    name: 'Pro Volleyball League Sponsorship',
+    kind: 'Sports promotion',
+    text: 'Devriz Group sponsors and organises volleyball tournaments at the grassroots level, giving young athletes a platform to showcase talent and earn recognition. The events bring together communities around health, competition and team spirit.',
+    image: 'csr-volleyball-felicitation',
+    alt: 'Dignitaries presenting an award plaque at a Pro Volleyball League event sponsored by the group',
+  },
+  {
+    category: 'sports',
+    name: 'Youth Sports Promotion',
+    kind: 'MMA & combat sports',
+    text: 'Beyond volleyball, the group supports emerging combat sports athletes through sponsorships, facility access and championship backing — including the HFC (Hybrid Fighting Championship). Winners are mentored for national-level competition.',
+    image: 'csr-youth-sports',
+    alt: 'Athletes posing with trophies and the HFC Winner award, supported by the group',
+    // This image is a pre-made collage, so it needs a taller frame to avoid being cropped.
+    ratio: '3/4',
+  },
+  {
+    category: 'sports',
+    name: 'Inter-District Volleyball Tournament',
+    kind: 'Regional competition',
+    text: 'A multi-day volleyball tournament organised across districts, drawing teams from schools, colleges and community clubs. The events are structured as proper tournaments with referees, scoring and prize ceremonies.',
+    image: 'csr-volleyball-match',
+    alt: 'Volleyball match in action during an inter-district tournament with players wearing DEV jerseys',
+  },
+  {
+    category: 'sports',
+    name: 'Sports Award Ceremonies',
+    kind: 'Recognition',
+    text: 'Outstanding young athletes are recognised at group-sponsored award ceremonies. Trophies, certificates and Health Ambassador awards are presented to encourage continued sporting excellence.',
+    image: 'csr-sports-award',
+    alt: 'A young athlete being recognised at a sports award ceremony with a Health Ambassador plaque',
+  },
+];
+
+const gallery = [
+  { image: 'csr-volleyball-action', alt: 'Intense volleyball match action during a group-sponsored tournament' },
+  { image: 'csr-volleyball-tournament', alt: 'Volleyball players jumping at the net in a community tournament' },
+  { image: 'csr-volleyball', alt: 'Players leaping at the net during a group-sponsored volleyball match' },
+  { image: 'csr-volleyball-community', alt: 'Community volleyball tournament match with spectators' },
+];
+
+const stats = [
+  { value: '5,000+', label: 'Lives touched' },
+  { value: '50+', label: 'Events organised' },
+  { value: '12+', label: 'Districts covered' },
+  { value: '3', label: 'States of activity' },
+];
+
+const principles = [
+  { title: 'Rooted in community', text: 'Every initiative starts with a real need identified at the ground level — not a boardroom agenda. Our CSR work reflects the communities we serve.' },
+  { title: 'Youth at the centre', text: 'From nutrition to sports to skilling, we invest in the next generation. Young people are not just beneficiaries — they are partners in the effort.' },
+  { title: 'Sustained, not seasonal', text: 'We do not believe in one-off events. Our programmes run year after year, building relationships and outcomes that compound over time.' },
+];
+---
+
+<Base
+  title="CSR & Events"
+  description="Devriz Group's corporate social responsibility: philanthropy, community clean-ups, tree plantation, mid-day meals, and sports event sponsorships across Delhi, Uttar Pradesh and Bihar."
+  crumbs={crumbs}
+>
+  <!-- Hero -->
+  <PageHead
+    title="Creating impact beyond business."
+    lede="Devriz Group channels resources, people and energy into programmes that strengthen communities, promote youth sports and support those who need it most."
+    crumbs={crumbs}
+    image={{ id: 'csr-volleyball-felicitation', alt: 'Dignitaries presenting an award at a group-sponsored volleyball event' }}
+  />
+
+  <!-- Impact stats -->
+  <section class="border-b border-line" aria-label="CSR in numbers">
+    <dl class="wrap grid grid-cols-2 lg:grid-cols-4">
+      {
+        stats.map((s, i) => (
+          <div class:list={['flex flex-col-reverse gap-3 py-8 lg:py-11', i % 2 === 1 && 'border-l border-line pl-6', i > 1 && 'border-t border-line lg:border-t-0', i > 0 && 'lg:border-l lg:pl-10']}>
+            <dt class="meta">{s.label}</dt>
+            <dd class="figure text-5xl lg:text-7xl">{s.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <!-- Filterable initiatives -->
+  <section class="section" data-filter="category" data-noun="initiative">
+    <div class="wrap">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <h2 class="display-lg">Programmes & events</h2>
+        <p class="meta" aria-live="polite" data-filter-count>{`${initiatives.length} initiatives`}</p>
+      </div>
+      <div class="no-scrollbar -mx-5 mt-8 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:px-0" role="group" aria-label="Filter by area">
+        <button type="button" class="chip" data-filter-value="" aria-pressed="true">All areas</button>
+        {
+          categories.map((c) => (
+            <button type="button" class="chip" data-filter-value={c.id} aria-pressed="false">
+              {c.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <ul class="mt-12 border-b border-line">
+        {
+          initiatives.map((item) => (
+            <li class="grid items-start gap-x-16 gap-y-6 border-t border-line py-10 lg:grid-cols-12 lg:py-14" data-filter-item data-tags={item.category}>
+              <div class="lg:col-span-7">
+                <p class="meta">{`${categories.find((c) => c.id === item.category)!.label} / ${item.kind}`}</p>
+                <h3 class="display-md mt-4">{item.name}</h3>
+                <p class="mt-4 max-w-[58ch] text-[1.0625rem] leading-relaxed text-ink-2">{item.text}</p>
+              </div>
+              {
+                item.image && hasImage(item.image) && (
+                  <div class="lg:col-span-5">
+                    <Media id={item.image} alt={item.alt!} ratio={item.ratio ?? '4/3'} sizes="(min-width: 1024px) 40vw, 100vw" />
+                  </div>
+                )
+              }
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section class="section border-y border-line bg-bg-2">
+    <div class="wrap">
+      <div class="max-w-3xl" data-reveal>
+        <h2 class="display-lg">On the ground</h2>
+        <p class="lede mt-5">Moments from the tournaments, clean-ups and award ceremonies we organise across the region.</p>
+      </div>
+      <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
+        {
+          gallery.map((g, i) => (
+            hasImage(g.image) && (
+              <div data-reveal style={`--i:${i}`}>
+                <Media id={g.image} alt={g.alt} ratio="3/4" sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" />
+              </div>
+            )
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section class="section">
+    <div class="wrap">
+      <div class="max-w-3xl" data-reveal>
+        <h2 class="display-lg">How we approach responsibility</h2>
+      </div>
+      <ul class="mt-12 grid gap-x-10 gap-y-10 lg:mt-16 lg:grid-cols-3">
+        {
+          principles.map((p, i) => (
+            <li class="border-t-2 border-ink pt-6" data-reveal style={`--i:${i}`}>
+              <h3 class="display-sm">{p.title}</h3>
+              <p class="mt-3 max-w-[42ch] text-ink-2">{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand heading="Want to collaborate?" text="If you work in community development, youth sports or social welfare in Delhi, Uttar Pradesh or Bihar, we would like to hear from you." href="/contact/?enquiry=partnership" />
+</Base>
+
+<script>
+  import '../scripts/filter.ts';
+</script>
+
+<style>
+  /* Gallery hover effect */
+  [data-reveal] :global(.overflow-hidden) {
+    transition: transform 0.5s var(--ease-out);
+  }
+  [data-reveal]:hover :global(.overflow-hidden) {
+    transform: scale(1.02);
+  }
+</style>

@@ -47,6 +47,7 @@ export const mainNav = [
   { label: 'Companies', href: '/companies/' },
   { label: 'Leadership', href: '/leadership/' },
   { label: 'Impact', href: '/impact/' },
+  { label: 'CSR & Events', href: '/csr-events/' },
   { label: 'Newsroom', href: '/newsroom/' },
   { label: 'Careers', href: '/careers/' },
 ] as const;
@@ -101,6 +102,7 @@ export const footerNav = [
       { label: 'Current openings', href: '/careers/#openings' },
       { label: 'Recruitment fraud alert', href: '/careers/recruitment-fraud-alert/' },
       { label: 'Impact overview', href: '/impact/' },
+      { label: 'CSR & Events', href: '/csr-events/' },
       { label: 'Animal welfare', href: '/impact/?category=animal-welfare' },
       { label: 'Skilling and employment', href: '/impact/?category=skilling' },
     ],
